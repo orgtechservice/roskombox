@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+#------------------------------------------------------------------------------------#
+# Этот файл является частью приложения Roskombox, разработанного ООО «Оргтехсервис». #
+# https://github.com/orgtechservice/roskombox                                        #
+# Предоставляется на условиях GNU GPL v3                                             #
+#------------------------------------------------------------------------------------#
+
 # компоненты Django
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST

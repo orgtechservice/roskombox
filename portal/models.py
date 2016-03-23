@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+#------------------------------------------------------------------------------------#
+# Этот файл является частью приложения Roskombox, разработанного ООО «Оргтехсервис». #
+# https://github.com/orgtechservice/roskombox                                        #
+# Предоставляется на условиях GNU GPL v3                                             #
+#------------------------------------------------------------------------------------#
+
 from django.db import models, connection
 from django.utils import timezone
 from django.forms import ValidationError

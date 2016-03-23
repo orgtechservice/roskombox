@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+#------------------------------------------------------------------------------------#
+# Этот файл является частью приложения Roskombox, разработанного ООО «Оргтехсервис». #
+# https://github.com/orgtechservice/roskombox                                        #
+# Предоставляется на условиях GNU GPL v3                                             #
+#------------------------------------------------------------------------------------#
+
 import django.forms
 from django.contrib.auth.forms import *
 from django.core.urlresolvers import reverse
