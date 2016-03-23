@@ -21,18 +21,11 @@ import sys, base64, signal, time, zipfile
 from suds.client import Client
 from suds.sax.text import Text
 
-# Используем ли мы второй Питон?
-using_py2 = (sys.version_info[0] == 2)
-
 class RoskomAPI:
 	def __init__(self, url, request_xml, request_xml_sign):
 		self.url = url
-		if using_py2:
-			self.request_xml = base64.b64encode(request_xml)
-			self.request_xml_sign = base64.b64encode(request_xml_sign)
-		else:
-			self.request_xml = base64.b64encode(request_xml).decode('utf-8')
-			self.request_xml_sign = base64.b64encode(request_xml_sign).decode('utf-8')
+		self.request_xml = base64.b64encode(request_xml).decode('utf-8')
+		self.request_xml_sign = base64.b64encode(request_xml_sign).decode('utf-8')
 
 		self.client = Client(url)
 		self.service = self.client.service
