@@ -84,4 +84,69 @@ DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'roskombo
 
 После того, как команда `./manage.py migrate` отработала успешно, можно попробовать запустить приложение для теста в режиме отладки при помощи команды `./manage.py runserver 0.0.0.0:8000`, затем при помощи браузера открыть IP-адрес машины, на которую производится установка, с добавлением порта 8000, например: `http://192.168.1.5:8000/`. Если при этом отобразилась страница входа, можно продолжить настройку.
 
-Далее вновь открываем для редактирования файл `roskombox/local_settings.py` и меняем значение переменной `DEBUG` с `True` на `False`. После этого остаётся заключительный этап: настройка uWSGI и nginx.
+Далее вновь открываем для редактирования файл `roskombox/local_settings.py` и меняем значение переменной `DEBUG` с `True` на `False`. Затем запускаем `./manage.py collectstatic` — это приведёт к копированию статических файлов в каталог, откуда они будут раздаваться при помощи nginx. Наконец, запускаем `./manage.py createsuperuser` и отвечаем на вопросы мастера создания пользователя системы (это можно сделать и позднее).
+
+Теперь отредактируем `/etc/nginx/sites-available/default` следующим образом:
+
+```nginx
+server {
+        listen 80 default_server;
+        server_name roskombox.local;
+        charset utf-8;
+        client_max_body_size 128m;
+
+        location /static {
+                root /home/admin/www/roskombox;
+                expires 1y;
+        }
+
+        location /media {
+                root /home/admin/www/roskombox;
+                expires 1y;
+        }
+
+        location / {
+                include uwsgi_params;
+                #uwsgi_intercept_errors on;
+                uwsgi_pass 127.0.0.1:8807;
+        }
+
+        #include errors.conf;
+}
+```
+
+Проверим правильность синтаксиса конфигурационного файла при помощи команды `nginx -t` и, если всё нормально, заставим nginx перезагрузить конфигурацию командой `systemctl reload nginx` или `killall -HUP nginx`. Если на машине нет других сайтов, можно и перезапустить nginx командой `systemctl restart nginx`.
+
+Теперь настроим uWSGI. Его настройка будет состоять из 2 шагов: настройка императора и настройка вассала. Не заостряя внимание на сути этих терминов, внесём следующие правки: сначала отредактируем файл `/etc/uwsgi-emperor/emperor.ini`. Помещаем туда следующее (остальное удаляем).
+
+```ini
+[uwsgi]
+emperor = /etc/uwsgi-emperor/vassals
+#vassals-inherit = common/defaults.ini
+no-orphans = true
+```
+
+Создаём файл `/etc/uwsgi-emperor/vassals/roskombox.ini` с таким содержимым:
+
+```ini
+
+[uwsgi]
+socket = 127.0.0.1:8807
+processes = 10
+cheaper = 2
+cheap = 600
+master = true
+max-requests = 100
+threads = 4
+chdir = /home/admin/www/roskombox
+env = DJANGO_SETTINGS_MODULE=roskombox.settings
+virtualenv = /home/admin/venvs/roskombox
+module = roskombox.wsgi:application
+plugins = python3
+#static-map = /static=/home/admin/www/roskombox/portal/static
+mule = 1
+auto-procname = true
+procname-prefix-spaced = [roskombox]
+```
+
+Перезапускаем стек uWSGI: `systemctl restart uwsgi`, смотрим содержимое системного лога: `journalctl -lf`. Если сообщений об ошибках нет, значит, развёртывание приложения успешно завершено. Можно пользоваться им, обращаясь из браузера по IP-адресу или добавив в локальном DNS-сервере зону `roskombox.local` с A-записью, указывающей на IP устройства с развёрнутым приложением.
