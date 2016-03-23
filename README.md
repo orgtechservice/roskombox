@@ -47,7 +47,7 @@ FLUSH PRIVILEGES;
 
 Пароль, заданный пользователю `roskombox@localhost`, необходимо сохранить, так как он понадобится позднее.
 
-Добавим пользователя и склонируем репозиторий Roskombox, попутно создав виртуальное окружение, в которое будут установлены зависимости Roskombox.
+Добавим пользователя и склонируем репозиторий Roskombox, попутно создав виртуальное окружение, в которое будут установлены зависимости Roskombox. **Важно**: lxml имеет волшебное свойство компилироваться не просто долго, а очень долго; на медленной машине, каковой является Raspberry Pi, это запросто может занять минут 20-30.
 
 ```bash
 useradd -m -s /bin/bash admin
@@ -55,7 +55,8 @@ su - admin
 mkdir ~/venvs
 pyvenv ~/venvs/roskombox
 source ~/venvs/roskombox/bin/activate
-pip install Django django-bootstrap-pagination django-crispy-forms django-jsonview django-sendmail-backend mysqlclient requests suds-py3 lxml uwsgidecorators
+pip install Django django-bootstrap-pagination django-crispy-forms django-jsonview django-sendmail-backend requests suds-py3 uwsgidecorators
+pip install mysqlclient lxml # здесь будет компиляция
 mkdir ~/www
 cd ~/www
 git clone https://github.com/orgtechservice/roskombox.git
@@ -78,3 +79,12 @@ DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'NAME': 'roskombo
 ```
 
 В качестве пароля, как нетрудно догадаться, указываем тот, который был задан для пользователя MySQL `roskombox@localhost` на этапе создания базы данных.
+
+Пробуем запустить `./manage.py`, пока без аргументов. Если при этом не было сообщений об ошибках, и был выведен список доступных команд, можно перейти к следующему шагу — заполнению БД.
+
+```bash
+./manage.py migrate
+```
+
+Выполнение этой команды приведёт к последовательному выполнению группы скриптов, называемых миграциями и ответственных за создание таблиц в БД. Соответственно, будет либо успешное выполнение команды, либо сообщение о том, что подключиться к БД не удалось. Если произошла ошибка, необходимо удостовериться, что реквизиты доступа к БД указаны корректно и что СУБД запущена.
+
