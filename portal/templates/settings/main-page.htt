@@ -1,0 +1,16 @@
+{% extends 'abstract/settings-page.htt' %}
+
+{% block form %}
+	<table class="table table-bordered table-striped table-highlight">
+		<thead>
+			<tr><th>Параметр</th><th>Значение</th></tr>
+		</thead>
+		<tbody>
+			<tr><td>Файл запроса <code>request.xml</code></td><td>{% if request_xml %}<span class="label label-success">Загружен</span>{% else %}<span class="label label-warning">Не загружен</span>{% endif %}</td></tr>
+			<tr><td>Файл подписи <code>request.xml.sign</code></td><td>{% if request_xml_sign %}<span class="label label-success">Загружен</span>{% else %}<span class="label label-warning">Не загружен</span>{% endif %}</td></tr>
+			<tr><td>E-mail для уведомлений</td><td>{% if email %}<span class="label label-success">{{ email }}</span>{% else %}<span class="label label-warning">Не указан</span>{% endif %}</td></tr>
+			<tr><td>Макимальное число доступных URL</td><td>{% if max_available != 0 %}<span class="label label-success">{{ max_available }}</span>{% else %}<span class="label label-warning">Не задано</span>{% endif %}</td></tr>
+			<tr><td>Подстрока для поиска</td><td><span class="label label-success">{{ search_substring }}</span></td></tr>
+		</tbody>
+	</table>
+{% endblock %}

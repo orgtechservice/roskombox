@@ -1,0 +1,37 @@
+
+.table-buttons {
+	margin-bottom: 16px;
+	float: right;
+}
+
+.profile {
+	text-align: center;
+	padding-top: 48px;
+	padding-bottom: 48px;
+}
+
+.account-container form {
+	margin: 0px;
+	padding: 0px;
+}
+
+.account-container .form-actions {
+	padding: 0px;
+	margin: 0px;
+	background-color: transparent;
+	border: 0px none;
+	text-align: center !important;
+}
+
+.account-container .form-actions .button {
+	float: none;
+}
+
+tr.active-row td {
+	background-color: #DCFFC1 !important;
+}
+
+.ssh_key_area {
+	width: 98%;
+	height: 100px;
+}
