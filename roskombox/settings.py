@@ -102,6 +102,7 @@ ROSKOM_CACHE_ROOT = os.path.join(BASE_DIR, 'cache')
 ROSKOM_TEST_MODE = False
 ROSKOM_SEARCH_SUBSTRING = 'eais.rkn.gov.ru'
 ROSKOM_FROM_EMAIL = 'roskom@mkpnet.ru'
+EMAIL_BACKEND = 'django_sendmail_backend.backends.EmailBackend'
 
 try:
 	from roskombox.local_settings import *
