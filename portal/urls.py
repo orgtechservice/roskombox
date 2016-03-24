@@ -31,10 +31,6 @@ urlpatterns = [
 	#url(r'^admin', views.redir_home_page),
 	url(r'^accounts/profile/?$', views.redir_home_page),
 
-	# Действия
-	url(r'^downloads/new/?$', views.perform_download_page, name = 'perform-download'),
-	url(r'^scans/new/?$', views.perform_scan_page, name = 'perform-scan'),
-
 	# Авторизация пользователей
 	url(r'^accounts/login/?$', auth_views.login, {'template_name': 'login-page.htt', 'authentication_form': forms.LoginForm}, name = 'login'),
 	url(r'^accounts/logout/?$', views.logout_page, name = 'logout'),
@@ -43,4 +39,6 @@ urlpatterns = [
 	url(r'^api/add_ssh_key$', api.add_ssh_key, name = 'api.add_ssh_key'),
 	url(r'^api/del_ssh_key$', api.del_ssh_key, name = 'api.del_ssh_key'),
 	url(r'^api/check_updates$', api.check_updates, name = 'api.check_updates'),
+	url(r'^api/perform_load$', api.perform_load, name = 'api.perform_load'),
+	url(r'^api/perform_scan$', api.perform_scan, name = 'api.perform_scan'),
 ]

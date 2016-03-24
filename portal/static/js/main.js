@@ -53,26 +53,39 @@ function showMessage(text) {
 }
 
 var last_scan = null;
+var load_requested = false;
+var scan_requested = false;
 
 // Наши обновления пришли, посмотрим, что там
 function handleUpdates(updates) {
 	progress_bar = $('#progress_bar');
 	progress_bar_value = $('#progress_bar_value');
 	perform_scan_button = $('#perform_scan_button');
+	
 	if(updates.scan_id) {
 		last_scan = $('#scan_state_' + updates.scan_id);
 		scan_progress = parseInt(updates.scan_progress);
 		last_scan.text(scan_progress + '% выполнено');
 		progress_bar.show();
 		progress_bar_value.css('width', scan_progress + '%');
+		scan_requested = false;
 	} else {
-		if(last_scan) {
-			last_scan.addClass('label-success');
-			last_scan.text('Завершена');
-			last_scan = null;
+		if(!scan_requested) {
+			if(last_scan) {
+				last_scan.addClass('label-success');
+				last_scan.text('Завершена');
+				last_scan = null;
+			}
+			progress_bar.hide();
+			perform_scan_button.show();
 		}
-		progress_bar.hide();
-		perform_scan_button.show();
+	}
+
+	if(updates.load_id) {
+		if(load_requested) {
+			//showMessage('Начата выгрузка');
+			location.reload();
+		}
 	}
 }
 
@@ -88,6 +101,12 @@ function handleAPIResponse(result) {
 		break;
 		case 'check_updates':
 			handleUpdates(result);
+		break;
+		case 'perform_load':
+			load_requested = true;
+		break;
+		case 'perform_scan':
+			scan_requested = true;
 		break;
 		default:
 			showMessage('Неадекватный ответ сервера');
@@ -188,6 +207,35 @@ function del_ssh_key(key_name) {
 	xml_http_request.open("POST", '/api/del_ssh_key', true);
 	xml_http_request.setRequestHeader("X-CSRFToken", $('#csrf_token').val());
 	xml_http_request.send(data);
+
+	return false;
+}
+
+function perform_load() {
+	if(!(xml_http_request = getXmlHttpObject())) {
+		showMessage(ajax_error);
+		return false;
+	}
+
+	xml_http_request.open("GET", '/api/perform_load', true);
+	xml_http_request.send(null);
+
+	$('#download_button').prop('disabled', true);
+
+	return false;
+}
+
+function perform_scan() {
+	if(!(xml_http_request = getXmlHttpObject())) {
+		showMessage(ajax_error);
+		return false;
+	}
+
+	xml_http_request.open("GET", '/api/perform_scan', true);
+	xml_http_request.send(null);
+
+	$('#perform_scan_button').hide();
+	$('#progress_bar').show();
 
 	return false;
 }

@@ -47,7 +47,7 @@
 					<div class="bar" style="width: 0%" id="progress_bar_value"></div>
 				</div>
 			</div>
-			<a href="{% url 'perform-scan' %}" id="perform_scan_button" class="btn btn-large {% if unfinished %} disabled{% else %} btn-primary{% endif %}"{% if unfinished %} onclick="$('#progress_bar').show(); return false;"{% endif %} style="margin-top: 10px;{% if unfinished %} display: none;{% endif %}">{% if unfinished %}Ожидается проверка{% else %}Произвести проверку{% endif %}</a>
+			<button id="perform_scan_button" class="btn btn-large {% if unfinished %} disabled{% else %} btn-primary{% endif %}" onclick="return perform_scan();" style="margin-top: 10px;{% if unfinished %} display: none;{% endif %}">{% if unfinished %}Ожидается проверка{% else %}Произвести проверку{% endif %}</a>
 	{% endif %}
 {% endblock %}
 

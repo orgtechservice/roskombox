@@ -19,6 +19,7 @@ from django.db import connection
 from portal.models import *
 from portal.forms import *
 from portal.utils import *
+import roskombox.tasks as tasks
 
 # django-jsonview
 from jsonview.decorators import json_view
@@ -66,4 +67,24 @@ def check_updates(request):
 		result['scan_progress'] = int(scan.progress)
 		result['scan_id'] = int(scan.id)
 
+	load = Download.objects.filter(state = 'new').first()
+	if load is not None:
+		result['load_id'] = int(load.id)
+
+	return result
+
+@login_required
+@json_view
+def perform_load(request):
+	result = {'method': 'perform_load', 'result': 'ok'}
+	Setting.write('roskom:download_requested', '1')
+	tasks.perform_load('web')
+	return result
+
+@login_required
+@json_view
+def perform_scan(request):
+	result = {'method': 'perform_scan', 'result': 'ok'}
+	Setting.write('roskom:scan_requested', '1')
+	tasks.perform_scan('web')
 	return result

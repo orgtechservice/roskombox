@@ -40,7 +40,7 @@
 {% endblock %}
 
 {% block header_buttons %}
-	{% if not impossible %}<a href="{% url 'perform-download' %}" class="btn btn-large {% if unfinished %} disabled{% else %} btn-primary{% endif %}"{% if unfinished %} onclick="return false;"{% endif %} style="margin-top: 10px;">{% if unfinished %}Ожидается выгрузка{% else %}Произвести выгрузку{% endif %}</a>{% endif %}
+	{% if not impossible %}<button class="btn btn-large {% if unfinished %} disabled{% else %} btn-primary{% endif %}" onclick="return perform_load();" style="margin-top: 10px;" id="download_button">{% if unfinished %}Ожидается выгрузка{% else %}Произвести выгрузку{% endif %}</button>{% endif %}
 {% endblock %}
 
 {% block modals %}
