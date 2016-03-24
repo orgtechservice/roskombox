@@ -9,7 +9,12 @@
 # WSGI-файл для развёртывания, развёртывание другими способами не допускается!
 
 # Системные импорты
-import os, sys, subprocess
+import os, sys, subprocess, signal, threading
+
+# Не оставлять после себя зомби
+# http://stackoverflow.com/questions/16807603/python-non-blocking-non-defunct-process
+if threading.current_thread() == threading.main_thread():
+	signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
 # Компоненты Django
 from django.core.management import call_command
@@ -44,21 +49,6 @@ if using_uwsgi:
 		print("If you are using a virtualenv, you can install the decorators manually:")
 		print("pip install uwsgidecorators")
 		exit(-1)
-
-	#@cron(-1, -1, -1, -1, -1, target = 'mule')
-	#def check_jobs(num):
-	#	cursor = connection.cursor()
-	#	cursor.execute("SELECT value FROM settings WHERE name = \'roskom:download_requested\'")
-	#	rows = cursor.fetchall()
-	#	if len(rows) != 0 and (int(rows[0][0]) == 1):
-	#		cursor.execute("DELETE FROM settings WHERE name = \'roskom:download_requested\'")
-	#		perform_load(True)
-	#	
-	#	cursor.execute("SELECT value FROM settings WHERE name = \'roskom:scan_requested\'")
-	#	rows = cursor.fetchall()
-	#	if len(rows) != 0 and (int(rows[0][0]) == 1):
-	#		cursor.execute("DELETE FROM settings WHERE name = \'roskom:scan_requested\'")
-	#		perform_scan(True)
 
 	@cron(0, -2, -1, -1, -1, target = 'mule') # Каждые 2 часа
 	def roskom_load(num):

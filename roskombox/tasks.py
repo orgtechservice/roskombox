@@ -1,8 +1,7 @@
 
 # Python
-import os
+import os, subprocess
 from os.path import expanduser
-import subprocess
 
 # Django
 from django.conf import settings
