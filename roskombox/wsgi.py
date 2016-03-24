@@ -53,7 +53,7 @@ if using_uwsgi:
 	@cron(0, -2, -1, -1, -1, target = 'mule') # Каждые 2 часа
 	def roskom_load(num):
 		print("Running roskom_load")
-		tasks.perform_load()
+		tasks.perform_load('auto')
 		print("roskom_load finished")
 
 	@cron(-10, -1, -1, -1, -1, target = 'mule')
@@ -67,7 +67,7 @@ if using_uwsgi:
 	@cron(0, 3, -1, -1, -1, target = 'mule')
 	def roskom_check(num):
 		print("Running roskom_check")
-		tasks.perform_scan()
+		tasks.perform_scan('auto')
 		print("roskom_check finished")
 
 	print("Running under uWSGI, perfect!")
