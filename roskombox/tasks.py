@@ -20,7 +20,7 @@ try:
 except:
 	pass
 
-def perform_load(mode = 'manual'):
+def perform_load(mode = 'manual', blocking = False):
 	os.chdir(settings.BASE_DIR)
 
 	if using_uwsgi:
@@ -41,7 +41,7 @@ def perform_load(mode = 'manual'):
 	if using_uwsgi:
 		uwsgi.unlock(0)
 
-def perform_scan(mode = 'manual'):
+def perform_scan(mode = 'manual', blocking = False):
 	os.chdir(settings.BASE_DIR)
 	
 	if using_uwsgi:

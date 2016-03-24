@@ -20,7 +20,7 @@
 	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
 	<link rel="stylesheet" href="{% static 'css/bootstrap-responsive.css' %}">
 	<link rel="stylesheet" href="{% static 'css/ui-lightness/jquery-ui-1.8.21.custom.css' %}">	
-	<link rel="stylesheet" href="{% static 'css/application.css' %}">
+	<link rel="stylesheet" href="{% static 'css/application-black-orange.css' %}">
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 	<link rel="stylesheet" href="{% static 'css/pages/dashboard.css' %}">
 	<script src="{% static 'js/libs/modernizr-2.5.3.min.js' %}"></script>
