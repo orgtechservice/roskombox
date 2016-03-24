@@ -25,6 +25,7 @@ from django.core.paginator import Paginator
 from portal.models import *
 from portal.forms import *
 from portal.utils import *
+import roskombox.tasks as tasks
 
 # Python
 import subprocess
@@ -187,11 +188,13 @@ def scan_details_page(request, scan_id):
 @login_required
 def perform_download_page(request):
 	Setting.write('roskom:download_requested', '1')
+	tasks.perform_load('web')
 	return redirect(reverse('downloads'))
 
 @login_required
 def perform_scan_page(request):
 	Setting.write('roskom:scan_requested', '1')
+	tasks.perform_scan('web')
 	return redirect(reverse('reports'))
 
 @login_required

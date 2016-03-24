@@ -58,9 +58,12 @@ class Command(BaseCommand):
 			exit(0)
 
 	def handle(self, *args, **options):
-		automatic = False
+
+		mode = 'manual'
 		if(len(args) > 0):
-			automatic = True
+			mode = args[0]
+			if mode not in ['automatic', 'web']:
+				mode = 'manual'
 
 		# Set the signal handler and a 5-second alarm
 		signal.signal(signal.SIGTERM, self.handle_signal)
@@ -99,10 +102,15 @@ class Command(BaseCommand):
 		self.stdout.write("Request sent")
 
 		self.code = response['code'].decode('utf-8')
-		if automatic:
+		if mode == 'automatic':
 			Download.automatic(self.code)
+		elif mode == 'web':
+			Download.web(self.code)
 		else:
 			Download.manual(self.code)
+
+		# Разблокируем кнопку, теперь её будет блокировать само наличие выгрузки
+		Setting.write('roskom:download_requested', '0')
 		
 		while True:
 			self.stdout.write("Waiting 30 seconds")

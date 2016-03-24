@@ -83,7 +83,7 @@ class Setting(models.Model):
 
 class Download(models.Model):
 	STATE_CHOICES = (('new', 'Выполняется'), ('got-response', 'Выполнена'), ('failed', 'Ошибка'))
-	MODE_CHOICES = (('automatic', 'Автоматическая'), ('manual', 'Ручная'))
+	MODE_CHOICES = (('automatic', 'Автоматическая'), ('manual', 'Ручная'), ('web', 'Веб'))
 
 	code = models.CharField(u'Код', blank = False, null = False, unique = True, max_length = 40)
 	created = models.DateTimeField(u'Создана', null = False, auto_now_add = True)
@@ -114,6 +114,12 @@ class Download(models.Model):
 	def manual(code):
 		Download.start_time = time.time()
 		item = Download(code = code, mode = 'manual', debug = roskom_debug, task_pid = os.getpid())
+		item.save()
+
+	@staticmethod
+	def web(code):
+		Download.start_time = time.time()
+		item = Download(code = code, mode = 'web', debug = roskom_debug, task_pid = os.getpid())
 		item.save()
 
 	@staticmethod
@@ -155,7 +161,7 @@ class Download(models.Model):
 
 class Scan(models.Model):
 	STATE_CHOICES = (('new', 'Начата'), ('failed', 'Ошибка'), ('finished', 'Завершена'))
-	MODE_CHOICES = (('automatic', 'Автоматическая'), ('manual', 'Ручная'))
+	MODE_CHOICES = (('automatic', 'Автоматическая'), ('manual', 'Ручная'), ('web', 'Веб'))
 
 	started = models.DateTimeField(u'Начата', null = False, auto_now_add = True)
 	finished = models.DateTimeField(u'Завершена', null = True, blank = True)
@@ -179,6 +185,12 @@ class Scan(models.Model):
 	@staticmethod
 	def manual():
 		item = Scan(mode = 'manual', state = 'new')
+		item.save()
+		return item
+
+	@staticmethod
+	def web():
+		item = Scan(mode = 'web', state = 'new')
 		item.save()
 		return item
 

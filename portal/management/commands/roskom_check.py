@@ -170,14 +170,21 @@ class Command(BaseCommand):
 
 	def handle(self, *args, **options):
 		global search_substring
-		automatic = False
+		mode = 'manual'
 		if(len(args) > 0):
-			automatic = True
+			mode = args[0]
+			if mode not in ['automatic', 'web']:
+				mode = 'manual'
 
-		if automatic:
+		if mode == 'automatic':
 			scan = Scan.automatic()
+		elif mode == 'web':
+			scan = Scan.web()
 		else:
 			scan = Scan.manual()
+
+		# Разблокируем кнопку, теперь её будет блокировать само наличие проверки
+		Setting.write('roskom:scan_requested', '0')
 
 		# Установим локаль
 		locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
