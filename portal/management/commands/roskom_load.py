@@ -62,7 +62,7 @@ class Command(BaseCommand):
 		mode = 'manual'
 		if(len(args) > 0):
 			mode = args[0]
-			if mode not in ['automatic', 'web']:
+			if mode not in ['auto', 'web']:
 				mode = 'manual'
 
 		# Set the signal handler and a 5-second alarm
@@ -102,7 +102,7 @@ class Command(BaseCommand):
 		self.stdout.write("Request sent")
 
 		self.code = response['code'].decode('utf-8')
-		if mode == 'automatic':
+		if mode == 'auto':
 			Download.automatic(self.code)
 		elif mode == 'web':
 			Download.web(self.code)

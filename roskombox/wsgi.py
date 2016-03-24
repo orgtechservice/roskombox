@@ -33,7 +33,7 @@ from django.core.wsgi import get_wsgi_application
 from django.db import connection
 
 # tasks
-import roskombox.tasks
+import roskombox.tasks as tasks
 
 # Задаём путь к модулю настроек
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "roskombox.settings")

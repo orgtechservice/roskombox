@@ -173,10 +173,10 @@ class Command(BaseCommand):
 		mode = 'manual'
 		if(len(args) > 0):
 			mode = args[0]
-			if mode not in ['automatic', 'web']:
+			if mode not in ['auto', 'web']:
 				mode = 'manual'
 
-		if mode == 'automatic':
+		if mode == 'auto':
 			scan = Scan.automatic()
 		elif mode == 'web':
 			scan = Scan.web()
