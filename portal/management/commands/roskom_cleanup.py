@@ -50,7 +50,6 @@ class Command(BaseCommand):
 		deadline = datetime.fromtimestamp(int(time.time()) - (60 * 60 * 2)) # 2 часа
 		open_scans = Scan.objects.filter(state = 'new')
 		for scan in open_scans:
-			print('HERE')
 			if self.process_exists(scan.task_pid) and scan.started < deadline:
 				killed = 'It was killed.'
 				try:
