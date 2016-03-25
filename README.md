@@ -134,7 +134,6 @@ no-orphans = true
 socket = 127.0.0.1:8807
 processes = 10
 cheaper = 2
-cheap = 600
 master = true
 max-requests = 100
 threads = 4
@@ -147,6 +146,14 @@ plugins = python3
 mule = 1
 auto-procname = true
 procname-prefix-spaced = [roskombox]
+```
+
+Редактируем `/etc/uwsgi-emperor/emperor.ini` (то, что там есть — удаляем):
+
+```ini
+[uwsgi]
+no-orphans = true
+emperor = /etc/uwsgi-emperor/vassals
 ```
 
 Перезапускаем стек uWSGI: `systemctl restart uwsgi`, смотрим содержимое журнала: `tail -f /var/log/uwsgi/emperor.log` (или `journalctl -lf` на некоторых ОС). Если сообщений об ошибках нет, значит, развёртывание приложения успешно завершено. Можно пользоваться им, обращаясь из браузера по IP-адресу или добавив в локальном DNS-сервере зону `roskombox.local` с A-записью, указывающей на IP устройства с развёрнутым приложением.
