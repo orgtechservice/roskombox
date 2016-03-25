@@ -45,6 +45,7 @@ class Command(BaseCommand):
 				download.set_failed('Process did not finish in 10 minutes. ' + killed)
 			else:
 				download.set_failed('Worker process crashed')
+				Setting.write('roskom:download_requested', '0')
 
 		deadline = datetime.fromtimestamp(int(time.time()) - (60 * 60 * 2)) # 2 часа
 		open_scans = Scan.objects.filter(state = 'new')
@@ -61,5 +62,6 @@ class Command(BaseCommand):
 				scan.set_failed('Process did not finish in 2 hours. ' + killed)
 			else:
 				scan.set_failed('Worker process crashed')
+				Setting.write('roskom:scan_requested', '0')
 
 		self.stdout.write("Job done!")
