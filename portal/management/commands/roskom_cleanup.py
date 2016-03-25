@@ -33,6 +33,8 @@ class Command(BaseCommand):
 
 		deadline = datetime.fromtimestamp(int(time.time()) - 600) # 10 минут
 		open_downloads = Download.objects.filter(state = 'new')
+		if(len(open_downloads) == 0):
+			Setting.write('roskom:download_requested', '0')
 		for download in open_downloads:
 			if self.process_exists(download.task_pid) and download.updated < deadline:
 				killed = 'It was killed.'
@@ -49,6 +51,8 @@ class Command(BaseCommand):
 
 		deadline = datetime.fromtimestamp(int(time.time()) - (60 * 60 * 2)) # 2 часа
 		open_scans = Scan.objects.filter(state = 'new')
+		if(len(open_scans) == 0):
+			Setting.write('roskom:scan_requested', '0')
 		for scan in open_scans:
 			if self.process_exists(scan.task_pid) and scan.started < deadline:
 				killed = 'It was killed.'
