@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#------------------------------------------------------------------------------------#
-# Этот файл является частью приложения Roskombox, разработанного ООО «Оргтехсервис». #
-# https://github.com/orgtechservice/roskombox                                        #
-# Предоставляется на условиях GNU GPL v3                                             #
-#------------------------------------------------------------------------------------#
-
 # Django
 from django.core.management.base import BaseCommand, CommandError
 from django.db import models
@@ -38,9 +32,9 @@ class Command(BaseCommand):
 			automatic = True
 
 		deadline = datetime.fromtimestamp(int(time.time()) - 600) # 10 минут
-		open_downloads = Download.objects.filter(state = 'new', updated__lt = deadline)
+		open_downloads = Download.objects.filter(state = 'new')
 		for download in open_downloads:
-			if self.process_exists(download.task_pid):
+			if self.process_exists(download.task_pid) and download.updated < deadline:
 				killed = 'It was killed.'
 				try:
 					os.kill(download.task_pid, 15)
@@ -53,9 +47,10 @@ class Command(BaseCommand):
 				download.set_failed('Worker process crashed')
 
 		deadline = datetime.fromtimestamp(int(time.time()) - (60 * 60 * 2)) # 2 часа
-		open_scans = Scan.objects.filter(state = 'new', started__lt = deadline)
+		open_scans = Scan.objects.filter(state = 'new')
 		for scan in open_scans:
-			if self.process_exists(scan.task_pid):
+			print('HERE')
+			if self.process_exists(scan.task_pid) and scan.started < deadline:
 				killed = 'It was killed.'
 				try:
 					os.kill(scan.task_pid, 15)
@@ -63,7 +58,7 @@ class Command(BaseCommand):
 					self.stderr.write("Failed to kill process %d, which seems to have hanged" % scan.task_pid)
 					killed = 'Failed to kill it.'
 
-				scan.set_failed('Process did not finish in 10 minutes. ' + killed)
+				scan.set_failed('Process did not finish in 2 hours. ' + killed)
 			else:
 				scan.set_failed('Worker process crashed')
 

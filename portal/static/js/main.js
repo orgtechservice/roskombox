@@ -68,13 +68,17 @@ function handleUpdates(updates) {
 		last_scan.text(scan_progress + '% выполнено');
 		progress_bar.show();
 		progress_bar_value.css('width', scan_progress + '%');
-		scan_requested = false;
+		if(scan_requested) {
+			scan_requested = false;
+			location.reload();
+		}
 	} else {
 		if(!scan_requested) {
 			if(last_scan) {
 				last_scan.addClass('label-success');
 				last_scan.text('Завершена');
 				last_scan = null;
+				location.reload();
 			}
 			progress_bar.hide();
 			perform_scan_button.show();

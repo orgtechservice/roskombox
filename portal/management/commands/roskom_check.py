@@ -201,7 +201,7 @@ class Command(BaseCommand):
 			checker.parse("%s/dump.xml" % settings.ROSKOM_CACHE_ROOT)
 			self.stdout.write("Parsing done")
 		except:
-			scan.failed("Не удалось распарсить dump.xml, возможно, не было выгрузок")
+			scan.set_failed("Не удалось распарсить dump.xml, возможно, не было выгрузок")
 			self.stderr.write("Failed to parse RSOC registry!")
 			exit(-1)
 
