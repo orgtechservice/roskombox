@@ -8,7 +8,7 @@
 
 # Django
 from django.core.management.base import BaseCommand, CommandError
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
 
 from portal.models import *
@@ -226,9 +226,10 @@ class Command(BaseCommand):
 
 		# С доступными ссылками работаем отдельно — их надо не просто сосчитать, а занести в базу
 		available_links = [i['url'] for i in out_list if i['status'] == 'available']
-		for link in available_links:
-			item = AvailableLink(scan = scan, url = link)
-			item.save()
+		with transaction.atomic():
+			for link in available_links:
+				item = AvailableLink(scan = scan, url = link)
+				item.save()
 
 		available = len(available_links)
 
