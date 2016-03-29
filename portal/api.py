@@ -24,11 +24,6 @@ import roskombox.tasks as tasks
 # django-jsonview
 from jsonview.decorators import json_view
 
-# Python
-import re
-
-re_ssh_key = re.compile(r'^(ssh\-rsa) ([a-zA-Z0-9+/]+={0,2}) (([a-z]+)@([a-z]+))$')
-
 @login_required
 @require_POST
 @json_view
