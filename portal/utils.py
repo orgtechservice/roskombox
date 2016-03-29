@@ -19,14 +19,6 @@ from django.conf import settings
 
 re_ssh_key = re.compile(r'^(ssh\-rsa|ssh\-dss) ([a-zA-Z0-9+/]+={0,2}) (([a-z]+)@([a-z]+))$')
 
-# Запросить SEO-данные для страницы
-def seo_data(page_slug):
-	try:
-		data = SEOData.objects.get(position = position)
-		return data
-	except:
-		return {}
-
 # Проанализировать запрос и извлечь из него номер запрошенной страницы (для постраничного вывода)
 def get_page_number(request):
 	try:
