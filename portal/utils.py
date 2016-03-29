@@ -17,7 +17,7 @@ from portal.models import *
 from django.core.mail import send_mail
 from django.conf import settings
 
-re_ssh_key = re.compile(r'^(ssh\-rsa) ([a-zA-Z0-9+/]+={0,2}) (([a-z]+)@([a-z]+))$')
+re_ssh_key = re.compile(r'^(ssh\-rsa|ssh\-dss) ([a-zA-Z0-9+/]+={0,2}) (([a-z]+)@([a-z]+))$')
 
 # Запросить SEO-данные для страницы
 def seo_data(page_slug):
