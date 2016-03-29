@@ -18,7 +18,7 @@
 
 В качестве app-сервера используется uWSGI (другие app-серверы не поддерживаются, так как используются некоторые специфические возможности uWSGI); для frontend-сервера рекомендуется использовать nginx.
 
-## Установка
+## Установка (для разработчиков)
 
 Установку приложения рассмотрим на примере операционной системы Raspbian Jessie (дистрибутив Debian для Raspberry Pi). На «настольной» или «серверной» версии Debian установка производится схожим образом.
 
@@ -26,7 +26,7 @@
 
 ```bash
 apt-get update
-apt-get install mysql-server uwsgi uwsgi-emperor uwsgi-plugin-python3 python3-venv build-essential libxml2-dev python3-dev libmysqlclient-dev
+apt-get install mysql-server uwsgi uwsgi-emperor uwsgi-plugin-python3 python3-venv build-essential libxml2-dev python3-dev libmysqlclient-dev libxslt1-dev nginx-full sqlite3
 ```
 
 Dev-пакеты и средства разработки необходимы в силу того, что при установке через pip пакетов с PyPI будет произведена компиляция исходных кодов на C.
@@ -157,3 +157,6 @@ emperor = /etc/uwsgi-emperor/vassals
 ```
 
 Перезапускаем стек uWSGI: `systemctl restart uwsgi`, смотрим содержимое журнала: `tail -f /var/log/uwsgi/emperor.log` (или `journalctl -lf` на некоторых ОС). Если сообщений об ошибках нет, значит, развёртывание приложения успешно завершено. Можно пользоваться им, обращаясь из браузера по IP-адресу или добавив в локальном DNS-сервере зону `roskombox.local` с A-записью, указывающей на IP устройства с развёрнутым приложением.
+
+## Установка (для пользователей)
+

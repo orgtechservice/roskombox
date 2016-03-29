@@ -7,6 +7,7 @@
 #------------------------------------------------------------------------------------#
 
 # Python
+import re
 from os.path import expanduser
 
 # Наш проект
@@ -15,6 +16,8 @@ from portal.models import *
 # Django
 from django.core.mail import send_mail
 from django.conf import settings
+
+re_ssh_key = re.compile(r'^(ssh\-rsa) ([a-zA-Z0-9+/]+={0,2}) (([a-z]+)@([a-z]+))$')
 
 # Запросить SEO-данные для страницы
 def seo_data(page_slug):
@@ -77,20 +80,29 @@ def send_mail_notification(event, arg):
 
 def fetch_ssh_keys():
 	filename = expanduser("~/.ssh/authorized_keys")
+
+	print(filename)
+
 	try:
-		return [{'mode': l[0], 'name': l[2], 'data': l[1]} for l in [l.strip().split(' ') for l in open(filename, 'r') if l != '']]
+		return [{'mode': l[0], 'name': l[2], 'data': l[1]} for l in [l.strip().split(' ') for l in open(filename, 'r') if re_ssh_key.match(l) is not None]]
 	except:
 		return []
 
 def append_ssh_key(key_data):
 	filename = expanduser("~/.ssh/authorized_keys")
 
+	lines = []
 	try:
-		with open(filename, 'a+') as file:
-			lines = [l.strip() for l in file if l != '']
+		with open(filename, 'r') as file:
+			lines = [l.strip() for l in file if re_ssh_key.match(l) is not None]
+	except:
+		pass
+
+	try:
+		with open(filename, 'w') as file:
 			lines += [key_data]
 			file.truncate(0)
-			file.write("\n".join(lines))
+			file.write("\n".join(lines) + "\n")
 			return True
 	except:
 		return False
@@ -100,11 +112,18 @@ def append_ssh_key(key_data):
 def delete_ssh_key(key_name):
 	filename = expanduser("~/.ssh/authorized_keys")
 
+	lines = []
 	try:
-		with open(filename, 'a+') as file:
-			lines = [l.strip() for l in file if (l != '') and (key_name not in l)]
+		with open(filename, 'r') as file:
+			lines = [l.strip() for l in file if re_ssh_key.match(l) is not None]
+	except:
+		pass
+
+	try:
+		with open(filename, 'w') as file:
+			lines = [l.strip() for l in lines if key_name not in l]
 			file.truncate(0)
-			file.write("\n".join(lines))
+			file.write("\n".join(lines) + "\n")
 			return True
 	except:
 		return False
