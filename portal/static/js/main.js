@@ -53,6 +53,7 @@ function showMessage(text) {
 }
 
 var last_scan = null;
+var last_download = null;
 var load_requested = false;
 var scan_requested = false;
 
@@ -67,6 +68,7 @@ function handleUpdates(updates) {
 		scan_progress = parseInt(updates.scan_progress);
 		last_scan.text(scan_progress + '% выполнено');
 		progress_bar.show();
+		perform_scan_button.hide();
 		progress_bar_value.css('width', scan_progress + '%');
 		if(scan_requested) {
 			scan_requested = false;
@@ -86,9 +88,22 @@ function handleUpdates(updates) {
 	}
 
 	if(updates.load_id) {
+		last_download = $('#download_state_' + updates.load_id);
+
 		if(load_requested) {
 			//showMessage('Начата выгрузка');
+			load_requested = false;
 			location.reload();
+		}
+	} else {
+		if(!load_requested) {
+			if(last_download) {
+				last_download.addClass('label-success');
+				last_download.text('Выполнена');
+				last_download = null;
+				location.reload();
+			}
+			//
 		}
 	}
 }
@@ -225,6 +240,7 @@ function perform_load() {
 	xml_http_request.send(null);
 
 	$('#download_button').prop('disabled', true);
+	$('#download_button').text('Пожалуйста, подождите');
 
 	return false;
 }
@@ -238,8 +254,10 @@ function perform_scan() {
 	xml_http_request.open("GET", '/api/perform_scan', true);
 	xml_http_request.send(null);
 
-	$('#perform_scan_button').hide();
-	$('#progress_bar').show();
+	//$('#perform_scan_button').hide();
+	//$('#progress_bar').show();
+	$('#perform_scan_button').prop('disabled', true);
+	$('#perform_scan_button').text('Пожалуйста, подождите');
 
 	return false;
 }
