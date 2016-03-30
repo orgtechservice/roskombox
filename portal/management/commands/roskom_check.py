@@ -187,7 +187,10 @@ class Command(BaseCommand):
 		Setting.write('roskom:scan_requested', '0')
 
 		# Установим локаль
-		locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
+		try:
+			locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
+		except:
+			pass
 
 		# Зададим подстроку, если в БД определена подмена
 		new_substring = Setting.read('search_substring', search_substring)
