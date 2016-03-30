@@ -31,38 +31,41 @@ class Command(BaseCommand):
 		if(len(args) > 0):
 			automatic = True
 
-		deadline = datetime.fromtimestamp(int(time.time()) - 600) # 10 минут
+		deadline_download = datetime.fromtimestamp(int(time.time()) - 600) # 10 минут
+		deadline_scan = datetime.fromtimestamp(int(time.time()) - 3600) # 1 час
+
 		open_downloads = Download.objects.filter(state = 'new')
 		if(len(open_downloads) == 0):
 			Setting.write('roskom:download_requested', '0')
 		for download in open_downloads:
-			if self.process_exists(download.task_pid) and download.updated < deadline:
-				killed = 'It was killed.'
-				try:
-					os.kill(download.task_pid, 15)
-				except:
-					self.stderr.write("Failed to kill process %d, which seems to have hanged" % download.task_pid)
-					killed = 'Failed to kill it.'
+			if self.process_exists(download.task_pid):
+				if (download.updated < deadline_download):
+					killed = 'It was killed.'
+					try:
+						os.kill(download.task_pid, 15)
+					except:
+						self.stderr.write("Failed to kill process %d, which seems to have hanged" % download.task_pid)
+						killed = 'Failed to kill it.'
 
-				download.set_failed('Process did not finish in 10 minutes. ' + killed)
+					download.set_failed('Process did not finish in 10 minutes. ' + killed)
 			else:
 				download.set_failed('Worker process crashed')
 				Setting.write('roskom:download_requested', '0')
 
-		deadline = datetime.fromtimestamp(int(time.time()) - (60 * 60 * 2)) # 2 часа
 		open_scans = Scan.objects.filter(state = 'new')
 		if(len(open_scans) == 0):
 			Setting.write('roskom:scan_requested', '0')
 		for scan in open_scans:
-			if self.process_exists(scan.task_pid) and scan.started < deadline:
-				killed = 'It was killed.'
-				try:
-					os.kill(scan.task_pid, 15)
-				except:
-					self.stderr.write("Failed to kill process %d, which seems to have hanged" % scan.task_pid)
-					killed = 'Failed to kill it.'
+			if self.process_exists(scan.task_pid):
+				if (scan.started < deadline_scan):
+					killed = 'It was killed.'
+					try:
+						os.kill(scan.task_pid, 15)
+					except:
+						self.stderr.write("Failed to kill process %d, which seems to have hanged" % scan.task_pid)
+						killed = 'Failed to kill it.'
 
-				scan.set_failed('Process did not finish in 2 hours. ' + killed)
+					scan.set_failed('Process did not finish in 2 hours. ' + killed)
 			else:
 				scan.set_failed('Worker process crashed')
 				Setting.write('roskom:scan_requested', '0')
