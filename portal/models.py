@@ -179,18 +179,21 @@ class Scan(models.Model):
 	@staticmethod
 	def automatic():
 		item = Scan(state = 'new')
+		item.task_pid = os.getpid()
 		item.save()
 		return item
 
 	@staticmethod
 	def manual():
 		item = Scan(mode = 'manual', state = 'new')
+		item.task_pid = os.getpid()
 		item.save()
 		return item
 
 	@staticmethod
 	def web():
 		item = Scan(mode = 'web', state = 'new')
+		item.task_pid = os.getpid()
 		item.save()
 		return item
 
