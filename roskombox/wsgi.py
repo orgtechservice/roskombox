@@ -56,7 +56,7 @@ if using_uwsgi:
 		tasks.perform_load('auto')
 		print("roskom_load finished")
 
-	@cron(-10, -1, -1, -1, -1, target = 'mule')
+	@cron(-2, -1, -1, -1, -1, target = 'mule')
 	def roskom_cleanup(num):
 		print("Running roskom_cleanup")
 		uwsgi.lock(0)

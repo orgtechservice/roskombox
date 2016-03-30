@@ -8,10 +8,32 @@
 
 # Python
 import os, subprocess
-from os.path import expanduser
+from os.path import expanduser, isfile
 
 # Django
 from django.conf import settings
+
+# Путь к интерпретатору виртуаленва
+PYTHON_VENV_BIN = expanduser("~/venvs/roskombox/bin/python")
+
+def make_command(command, mode):
+	if mode == 'manual':
+		arg = None
+	elif mode == 'web':
+		arg = 'web'
+	else:
+		arg = 'auto'
+
+	if isfile(PYTHON_VENV_BIN):
+		if arg is None:
+			return [PYTHON_VENV_BIN, 'manage.py', command]
+		else:
+			return [PYTHON_VENV_BIN, 'manage.py', command, arg]
+	else:
+		if arg is None:
+			return ['./manage.py', command]
+		else:
+			return ['./manage.py', command, arg]
 
 using_uwsgi = False
 try:
@@ -26,12 +48,7 @@ def perform_load(mode = 'manual', blocking = False):
 	if using_uwsgi:
 		uwsgi.lock(0)
 
-	if mode == 'manual':
-		command = ['./manage.py', 'roskom_load']
-	elif mode == 'web':
-		command = ['./manage.py', 'roskom_load', 'web']
-	else:
-		command = ['./manage.py', 'roskom_load', 'auto']
+	command = make_command('roskom_load', mode)
 		
 	try:
 		result = subprocess.Popen(command)
@@ -47,12 +64,7 @@ def perform_scan(mode = 'manual', blocking = False):
 	if using_uwsgi:
 		uwsgi.lock(0)
 
-	if mode == 'manual':
-		command = ['./manage.py', 'roskom_check']
-	elif mode == 'web':
-		command = ['./manage.py', 'roskom_check', 'web']
-	else:
-		command = ['./manage.py', 'roskom_check', 'auto']
+	command = make_command('roskom_check', mode)
 		
 	try:
 		result = subprocess.Popen(command)
