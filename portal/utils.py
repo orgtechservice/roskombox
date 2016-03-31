@@ -121,3 +121,8 @@ def delete_ssh_key(key_name):
 		return False
 
 	return False
+
+def reset_ssh_keys():
+	filename = expanduser("~/.ssh/authorized_keys")
+	with open(filename, 'w') as file:
+		file.truncate(0)
