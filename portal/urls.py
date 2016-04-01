@@ -20,6 +20,7 @@ urlpatterns = [
 	url(r'^settings/other/?$', views.settings_other_page, name = 'settings-other'),
 	url(r'^settings/password/?$', views.settings_password_page, name = 'settings-password'),
 	url(r'^settings/ssh/?$', views.settings_ssh_page, name = 'settings-ssh'),
+	url(r'^settings/auto/?$', views.settings_auto_page, name = 'settings-auto'),
 	url(r'^log/?$', views.log_page, name = 'log'),
 
 	# Для открытия в iframe

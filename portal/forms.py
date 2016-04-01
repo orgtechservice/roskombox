@@ -118,3 +118,6 @@ class SshSettingsForm(forms.Form):
 				Field('key', css_class = 'ssh_key_area'),
 			)
 		)
+
+class AutoSettingsForm(forms.Form):
+	pass

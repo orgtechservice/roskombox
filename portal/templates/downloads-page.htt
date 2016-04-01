@@ -11,7 +11,7 @@
 		</div>
 		<div class="span9">
 			{% if impossible %}
-				<div class="alert alert-error"><h4>Важно!</h4>Осуществление выгрузок невозможно, так как не предоставлены корректные файлы <code>request.xml</code> и <code>request.xml.sign</code>. Вы можете загрузить их на <a href="{% url 'settings' %}">странице настроек</a>.</div>
+				<div class="alert alert-error"><h4>Важно!</h4>Осуществление выгрузок невозможно, так как не предоставлены корректные файлы <code>request.xml</code> и <code>request.xml.sign</code>. Вы можете загрузить их на <a href="{% url 'settings-auth-files' %}">странице настроек</a>.</div>
 			{% endif %}
 
 			<table class="table table-bordered table-striped table-highlight">

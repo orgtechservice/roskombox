@@ -169,6 +169,20 @@ def settings_ssh_page(request):
 		return render('settings/ssh-page.htt', {'page': 'settings', 'subpage': 'ssh', 'title': title, 'description': description, 'form': form, 'keys': keys}, RequestContext(request))
 
 @login_required
+def settings_auto_page(request):
+	title = 'Настройки'
+	description = 'Настройки автоматики'
+	if request.method == 'POST':
+		form = AutoSettingsForm(data = request.POST)
+		if form.is_valid():
+			return redirect(reverse('settings'))
+		else:
+			return render('settings/auto-page.htt', {'page': 'settings', 'subpage': 'auto', 'title': title, 'description': description, 'form': form}, RequestContext(request))
+	else:
+		form = AutoSettingsForm(data = None)
+		return render('settings/auto-page.htt', {'page': 'settings', 'subpage': 'auto', 'title': title, 'description': description, 'form': form}, RequestContext(request))
+
+@login_required
 def log_page(request):
 	title = 'Журнал событий'
 	description = 'Журнал, в котором сохраняются все действия автоматики и пользователей'
