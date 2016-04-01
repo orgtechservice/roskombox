@@ -123,6 +123,9 @@ class AutoSettingsForm(forms.Form):
 	disable_downloads = forms.BooleanField(label = 'Отключить выгрузки', required = False, help_text = 'Поставьте галочку, если вы хотите отключить автоматические выгрузки раз в 2 часа')
 	disable_checks = forms.BooleanField(label = 'Отключить проверки', required = False, help_text = 'Поставьте галочку, если вы хотите отключить автоматические проверки доступности раз в 24 часа')
 
+	download_interval = forms.IntegerField(label = 'Интервал выгрузок', required = True, help_text = 'Укажите желаемый интервал автоматических выгрузок в часах', min_value = 1, max_value = 24)
+	check_hour = forms.IntegerField(label = 'Время ежедневной проверки', required = True, help_text = 'Время проверки в часах. Например, если задано 15, то проверка будет осуществляться в 15:00', min_value = 0, max_value = 23)
+
 	def __init__(self, *args, **kwargs):
 		super(AutoSettingsForm, self).__init__(*args, **kwargs)
 		self.form_tag = False
@@ -130,9 +133,14 @@ class AutoSettingsForm(forms.Form):
 		self.helper = FormHelper()
 		self.helper.layout = Layout (
 			Fieldset (
-				'',
+				'Запрет автоматики',
 				Field('disable_downloads'),
 				Field('disable_checks'),
+			),
+			Fieldset (
+				'Тайминги',
+				Field('download_interval', required = 'required'),
+				Field('check_hour', required = 'required')
 			),
 			Div (
 				Submit('submit', u'Сохранить', css_class = 'btn btn-danger'),
