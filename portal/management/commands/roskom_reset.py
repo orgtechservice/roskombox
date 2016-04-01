@@ -7,6 +7,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import six
 from django.utils.six.moves import input
+from django.contrib.auth.models import User
 
 from portal.models import *
 from portal.utils import *
@@ -62,4 +63,9 @@ class Command(BaseCommand):
 		# Удалим загруженные ключи SSH
 		reset_ssh_keys()
 
-		self.stdout.write('Operation completed')
+		# Создадим пользователя admin
+		admin = User(username = 'admin', password = '', is_staff = True, is_active = True, is_superuser = True)
+		admin.set_password('123456')
+		admin.save()
+
+		self.stdout.write('Operation completed, username: admin, password: 123456')
