@@ -120,4 +120,22 @@ class SshSettingsForm(forms.Form):
 		)
 
 class AutoSettingsForm(forms.Form):
-	pass
+	disable_downloads = forms.BooleanField(label = 'Отключить выгрузки', required = False, help_text = 'Поставьте галочку, если вы хотите отключить автоматические выгрузки раз в 2 часа')
+	disable_checks = forms.BooleanField(label = 'Отключить проверки', required = False, help_text = 'Поставьте галочку, если вы хотите отключить автоматические проверки доступности раз в 24 часа')
+
+	def __init__(self, *args, **kwargs):
+		super(AutoSettingsForm, self).__init__(*args, **kwargs)
+		self.form_tag = False
+
+		self.helper = FormHelper()
+		self.helper.layout = Layout (
+			Fieldset (
+				'',
+				Field('disable_downloads'),
+				Field('disable_checks'),
+			),
+			Div (
+				Submit('submit', u'Сохранить', css_class = 'btn btn-danger'),
+				css_class = 'form-actions'
+			)
+		)

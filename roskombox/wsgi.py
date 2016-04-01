@@ -50,11 +50,30 @@ if using_uwsgi:
 		print("pip install uwsgidecorators")
 		exit(-1)
 
+	def downloads_enabled():
+		cursor = connection.cursor()
+		cursor.execute("SELECT value FROM settings WHERE name = \'disable_downloads\'")
+		row = cursor.fetchone()
+		if row is None:
+			return True
+		else:
+			return row[0] == '0'
+
+	def checks_enabled():
+		cursor = connection.cursor()
+		cursor.execute("SELECT value FROM settings WHERE name = \'disable_checks\'")
+		row = cursor.fetchone()
+		if row is None:
+			return True
+		else:
+			return row[0] == '0'
+
 	@cron(0, -2, -1, -1, -1, target = 'mule') # Каждые 2 часа
 	def roskom_load(num):
-		print("Running roskom_load")
-		tasks.perform_load('auto')
-		print("roskom_load finished")
+		if downloads_enabled():
+			print("Running roskom_load")
+			tasks.perform_load('auto')
+			print("roskom_load finished")
 
 	@cron(-2, -1, -1, -1, -1, target = 'mule')
 	def roskom_cleanup(num):
@@ -66,8 +85,9 @@ if using_uwsgi:
 
 	@cron(0, 3, -1, -1, -1, target = 'mule')
 	def roskom_check(num):
-		print("Running roskom_check")
-		tasks.perform_scan('auto')
-		print("roskom_check finished")
+		if checks_enabled():
+			print("Running roskom_check")
+			tasks.perform_scan('auto')
+			print("roskom_check finished")
 
 	print("Running under uWSGI, perfect!")

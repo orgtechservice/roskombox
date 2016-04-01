@@ -11,6 +11,8 @@
 			<tr><td>E-mail для уведомлений</td><td>{% if email %}<span class="label label-success">{{ email }}</span>{% else %}<span class="label label-warning">Не указан</span>{% endif %}</td></tr>
 			<tr><td>Макимальное число доступных URL</td><td>{% if max_available != 0 %}<span class="label label-success">{{ max_available }}</span>{% else %}<span class="label label-warning">Не задано</span>{% endif %}</td></tr>
 			<tr><td>Подстрока для поиска</td><td><span class="label label-success">{{ search_substring }}</span></td></tr>
+			<tr><td>Автоматические выгрузки</td><td>{% if disable_downloads %}<span class="label label-warning">Отключены</span>{% else %}<span class="label label-success">Включены</span>{% endif %}</td></tr>
+			<tr><td>Автоматические проверки</td><td>{% if disable_checks %}<span class="label label-warning">Отключены</span>{% else %}<span class="label label-success">Включены</span>{% endif %}</td></tr>
 		</tbody>
 	</table>
 {% endblock %}

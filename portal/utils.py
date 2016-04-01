@@ -73,8 +73,6 @@ def send_mail_notification(event, arg):
 def fetch_ssh_keys():
 	filename = expanduser("~/.ssh/authorized_keys")
 
-	print(filename)
-
 	try:
 		return [{'mode': l[0], 'name': l[2], 'data': l[1]} for l in [l.strip().split(' ') for l in open(filename, 'r') if re_ssh_key.match(l) is not None]]
 	except:

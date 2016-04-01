@@ -1,5 +1,7 @@
 {% extends 'abstract/settings-page.htt' %}
 
+{% load crispy_forms_tags %}
+
 {% block form %}
-	
+	{% crispy form %}
 {% endblock %}

@@ -85,6 +85,8 @@ def settings_main_page(request):
 		'email': Setting.read('email', ''),
 		'max_available': Setting.read('max_available', '0'),
 		'search_substring': search_substring,
+		'disable_downloads': (Setting.read('disable_downloads', '0') == '1'),
+		'disable_checks': (Setting.read('disable_checks', '0') == '1'),
 		'page': 'settings', 'subpage': 'main', 'title': title, 'description': description,
 	}
 
@@ -175,11 +177,16 @@ def settings_auto_page(request):
 	if request.method == 'POST':
 		form = AutoSettingsForm(data = request.POST)
 		if form.is_valid():
+			Setting.write('disable_downloads', int(form.cleaned_data['disable_downloads']))
+			Setting.write('disable_checks', int(form.cleaned_data['disable_checks']))
 			return redirect(reverse('settings'))
 		else:
 			return render('settings/auto-page.htt', {'page': 'settings', 'subpage': 'auto', 'title': title, 'description': description, 'form': form}, RequestContext(request))
 	else:
-		form = AutoSettingsForm(data = None)
+		disable_downloads = (Setting.read('disable_downloads', '0') == '1')
+		disable_checks = (Setting.read('disable_checks', '0') == '1')
+		data = {'disable_downloads': disable_downloads, 'disable_checks': disable_checks}
+		form = AutoSettingsForm(data)
 		return render('settings/auto-page.htt', {'page': 'settings', 'subpage': 'auto', 'title': title, 'description': description, 'form': form}, RequestContext(request))
 
 @login_required
