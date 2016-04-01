@@ -85,7 +85,7 @@ class Download(models.Model):
 	STATE_CHOICES = (('new', 'Выполняется'), ('got-response', 'Выполнена'), ('failed', 'Ошибка'))
 	MODE_CHOICES = (('automatic', 'Автоматическая'), ('manual', 'Ручная'), ('web', 'Веб'))
 
-	code = models.CharField(u'Код', blank = False, null = False, unique = True, max_length = 40)
+	code = models.CharField(u'Код', blank = True, null = True, unique = True, max_length = 40)
 	created = models.DateTimeField(u'Создана', null = False, auto_now_add = True)
 	updated = models.DateTimeField(u'Обновлена', null = False, auto_now = True)
 	state = models.CharField(u'Статус', max_length = 15, null = False, blank = False, default = 'new', choices = STATE_CHOICES)
@@ -105,54 +105,48 @@ class Download(models.Model):
 		return reverse('download-details', args = (self.id,))
 
 	@staticmethod
-	def automatic(code):
-		Download.start_time = time.time()
-		item = Download(code = code, debug = roskom_debug, task_pid = os.getpid())
+	def automatic():
+		item = Download(debug = roskom_debug, task_pid = os.getpid())
+		item.start_time = time.time()
 		item.save()
+		return item
 
 	@staticmethod
-	def manual(code):
-		Download.start_time = time.time()
-		item = Download(code = code, mode = 'manual', debug = roskom_debug, task_pid = os.getpid())
+	def manual():
+		item = Download(mode = 'manual', debug = roskom_debug, task_pid = os.getpid())
+		item.start_time = time.time()
 		item.save()
+		return item
 
 	@staticmethod
-	def web(code):
-		Download.start_time = time.time()
-		item = Download(code = code, mode = 'web', debug = roskom_debug, task_pid = os.getpid())
+	def web():
+		item = Download(mode = 'web', debug = roskom_debug, task_pid = os.getpid())
+		item.start_time = time.time()
 		item.save()
+		return item
 
-	@staticmethod
-	def succeeded(code, filesize = 0):
-		try:
-			item = Download.objects.get(code = code)
-			item.state = 'got-response'
-			item.duration = time.time() - Download.start_time
-			item.filesize = filesize
-			item.task_pid = 0
-			item.save()
-		except:
-			pass
+	def set_code(self, code):
+		self.code = code
+		self.save()
 
-	@staticmethod
-	def failed(code, error):
-		try:
-			item = Download.objects.get(code = code)
-			item.state = 'failed'
-			item.error = error
-			item.task_pid = 0
-			item.save()
-		except:
-			pass
+	def succeeded(self, filesize = 0):
+		self.state = 'got-response'
+		self.duration = time.time() - self.start_time
+		self.filesize = filesize
+		self.task_pid = 0
+		self.save()
 
-	def set_failed(self, error):
+	def failed(self, error):
 		self.state = 'failed'
 		self.error = error
 		self.task_pid = 0
 		self.save()
 
 	def __str__(self):
-		return self.code
+		if (not self.code) or (self.code is None):
+			return "Выгрузка #%d" % self.id
+		else:
+			return self.code
 
 	class Meta:
 		db_table = 'downloads'

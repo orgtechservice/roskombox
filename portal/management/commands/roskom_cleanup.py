@@ -47,9 +47,9 @@ class Command(BaseCommand):
 						self.stderr.write("Failed to kill process %d, which seems to have hanged" % download.task_pid)
 						killed = 'Failed to kill it.'
 
-					download.set_failed('Process did not finish in 10 minutes. ' + killed)
+					download.failed('Process did not finish in 10 minutes. ' + killed)
 			else:
-				download.set_failed('Worker process crashed')
+				download.failed('Worker process crashed')
 				Setting.write('roskom:download_requested', '0')
 
 		open_scans = Scan.objects.filter(state = 'new')

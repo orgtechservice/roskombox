@@ -22,7 +22,7 @@
 					{% for download in downloads %}
 						<tr{% if download.state == 'new' %} class="active-row"{% endif %}>
 							<td width="1%" nowrap="nowrap">{{ download.created|naturaltime }}</td>
-							<td><a href="{{ download.get_details_url }}" class="download_details" target="download_details" title="Выгрузка: {{ download.code }}">{{ download.code }}</a></td>
+							<td><a href="{{ download.get_details_url }}" class="download_details" target="download_details" title="Выгрузка: {{ download.code }}">{{ download }}</a></td>
 							<td width="1%" nowrap="nowrap" style="text-align: center !important;">{{ download.get_mode_display }}</td>
 							<td width="1%" nowrap="nowrap" style="text-align: center !important;">{% if download.state == 'failed' %}<span class="label label-important">{{ download.get_state_display }}</span>{% else %}{% if download.state == 'new' %}<span class="label" id="download_state_{{ download.id }}">{{ download.get_state_display }}</span>{% else %}<span class="label label-success">{{ download.get_state_display }}</span>{% endif %}{% endif %}</td>
 						</tr>
@@ -40,7 +40,7 @@
 {% endblock %}
 
 {% block header_buttons %}
-	{% if not impossible %}<button class="btn btn-large {% if unfinished %} disabled{% else %} btn-primary{% endif %}" onclick="return perform_load();" style="margin-top: 10px;" id="download_button">{% if unfinished %}Ожидается выгрузка{% else %}Произвести выгрузку{% endif %}</button>{% endif %}
+	{% if not impossible %}<button class="btn btn-large {% if unfinished %} disabled{% else %} btn-primary{% endif %}" onclick="return perform_load();" style="margin-top: 10px;" id="download_button">{% if unfinished %}Выгрузка в процессе{% else %}Произвести выгрузку{% endif %}</button>{% endif %}
 {% endblock %}
 
 {% block modals %}
