@@ -10,6 +10,7 @@
 
 # Системные импорты
 import os, sys, subprocess, signal, threading
+from datetime import datetime
 
 # Не оставлять после себя зомби
 # http://stackoverflow.com/questions/16807603/python-non-blocking-non-defunct-process
@@ -50,30 +51,22 @@ if using_uwsgi:
 		print("pip install uwsgidecorators")
 		exit(-1)
 
-	def downloads_enabled():
+	def read_setting(name, default_value = None):
 		cursor = connection.cursor()
-		cursor.execute("SELECT value FROM settings WHERE name = \'disable_downloads\'")
+		cursor.execute("SELECT value FROM settings WHERE name = %s", (name,))
 		row = cursor.fetchone()
 		if row is None:
-			return True
+			return default_value
 		else:
-			return row[0] == '0'
+			return row[0]
+
+	def downloads_enabled():
+		disable = read_setting('disable_downloads', '0')
+		return disable == '0'
 
 	def checks_enabled():
-		cursor = connection.cursor()
-		cursor.execute("SELECT value FROM settings WHERE name = \'disable_checks\'")
-		row = cursor.fetchone()
-		if row is None:
-			return True
-		else:
-			return row[0] == '0'
-
-	@cron(0, -2, -1, -1, -1, target = 'mule') # Каждые 2 часа
-	def roskom_load(num):
-		if downloads_enabled():
-			print("Running roskom_load")
-			tasks.perform_load('auto')
-			print("roskom_load finished")
+		disable = read_setting('disable_checks', '0')
+		return disable == '0'
 
 	@cron(-2, -1, -1, -1, -1, target = 'mule')
 	def roskom_cleanup(num):
@@ -83,11 +76,21 @@ if using_uwsgi:
 		uwsgi.unlock(0)
 		print("roskom_cleanup finished")
 
-	@cron(0, 3, -1, -1, -1, target = 'mule')
-	def roskom_check(num):
-		if checks_enabled():
-			print("Running roskom_check")
+	@cron(0, -1, -1, -1, -1, target = 'mule') # ежечасно
+	def check_timers(num):
+		print("Checking timers")
+		download_interval = int(read_setting('download_interval', settings.ROSKOM_DOWNLOAD_INTERVAL))
+		check_hour = int(read_setting('check_hour', settings.ROSKOM_CHECK_HOUR))
+		print("Download interval is %d, check hour is %d" % (download_interval, check_hour))
+
+		now = datetime.now()
+
+		# Если нужно, осуществляем выгрузку
+		if (now.hour % download_interval) == 0:
+			tasks.perform_load('auto')
+
+		# Если нужно, запускаем проверку
+		if now.hour == check_hour:
 			tasks.perform_scan('auto')
-			print("roskom_check finished")
 
 	print("Running under uWSGI, perfect!")

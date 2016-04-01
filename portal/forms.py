@@ -138,7 +138,7 @@ class AutoSettingsForm(forms.Form):
 				Field('disable_checks'),
 			),
 			Fieldset (
-				'Тайминги',
+				'Периодичность',
 				Field('download_interval', required = 'required'),
 				Field('check_hour', required = 'required')
 			),

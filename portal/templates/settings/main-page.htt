@@ -3,16 +3,16 @@
 {% block form %}
 	<table class="table table-bordered table-striped table-highlight">
 		<thead>
-			<tr><th>Параметр</th><th>Значение</th></tr>
+			<tr><th>Параметр</th><th width="1%" nowrap="nowrap">Значение</th></tr>
 		</thead>
 		<tbody>
-			<tr><td>Файл запроса <code>request.xml</code></td><td>{% if request_xml %}<span class="label label-success">Загружен</span>{% else %}<span class="label label-warning">Не загружен</span>{% endif %}</td></tr>
-			<tr><td>Файл подписи <code>request.xml.sign</code></td><td>{% if request_xml_sign %}<span class="label label-success">Загружен</span>{% else %}<span class="label label-warning">Не загружен</span>{% endif %}</td></tr>
-			<tr><td>E-mail для уведомлений</td><td>{% if email %}<span class="label label-success">{{ email }}</span>{% else %}<span class="label label-warning">Не указан</span>{% endif %}</td></tr>
-			<tr><td>Макимальное число доступных URL</td><td>{% if max_available != 0 %}<span class="label label-success">{{ max_available }}</span>{% else %}<span class="label label-warning">Не задано</span>{% endif %}</td></tr>
-			<tr><td>Подстрока для поиска</td><td><span class="label label-success">{{ search_substring }}</span></td></tr>
-			<tr><td>Автоматические выгрузки</td><td>{% if disable_downloads %}<span class="label label-warning">Отключены</span>{% else %}<span class="label label-success">Включены</span>{% endif %}</td></tr>
-			<tr><td>Автоматические проверки</td><td>{% if disable_checks %}<span class="label label-warning">Отключены</span>{% else %}<span class="label label-success">Включены</span>{% endif %}</td></tr>
+			<tr><td>Файл запроса <code>request.xml</code></td><td style="text-align: center !important;">{% if request_xml %}<span class="label label-success">Загружен</span>{% else %}<span class="label label-warning">Не загружен</span>{% endif %}</td></tr>
+			<tr><td>Файл подписи <code>request.xml.sign</code></td><td style="text-align: center !important;">{% if request_xml_sign %}<span class="label label-success">Загружен</span>{% else %}<span class="label label-warning">Не загружен</span>{% endif %}</td></tr>
+			<tr><td>E-mail для уведомлений</td><td style="text-align: center !important;">{% if email %}<span class="label label-success">{{ email }}</span>{% else %}<span class="label label-warning">Не указан</span>{% endif %}</td></tr>
+			<tr><td>Макимальное число доступных URL</td><td style="text-align: center !important;">{% if max_available != 0 %}<span class="label label-success">{{ max_available }}</span>{% else %}<span class="label label-warning">Не задано</span>{% endif %}</td></tr>
+			<tr><td>Подстрока для поиска</td><td style="text-align: center !important;"><span class="label label-success">{{ search_substring }}</span></td></tr>
+			<tr><td>Автоматические выгрузки</td><td style="text-align: center !important;">{% if disable_downloads %}<span class="label label-warning">Отключены</span>{% else %}<span class="label label-success">{% if download_interval == 1 %}Ежечасно{% else %}Каждые {{ download_interval }}ч{% endif %}</span>{% endif %}</td></tr>
+			<tr><td>Автоматические проверки</td><td style="text-align: center !important;">{% if disable_checks %}<span class="label label-warning">Отключены</span>{% else %}<span class="label label-success">Ежедневно после {{ check_hour }}:00</span>{% endif %}</td></tr>
 		</tbody>
 	</table>
 {% endblock %}

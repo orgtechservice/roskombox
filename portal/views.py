@@ -87,6 +87,8 @@ def settings_main_page(request):
 		'search_substring': search_substring,
 		'disable_downloads': (Setting.read('disable_downloads', '0') == '1'),
 		'disable_checks': (Setting.read('disable_checks', '0') == '1'),
+		'download_interval': int(Setting.read('download_interval', settings.ROSKOM_DOWNLOAD_INTERVAL)),
+		'check_hour': int(Setting.read('check_hour', settings.ROSKOM_CHECK_HOUR)),
 		'page': 'settings', 'subpage': 'main', 'title': title, 'description': description,
 	}
 
@@ -179,13 +181,17 @@ def settings_auto_page(request):
 		if form.is_valid():
 			Setting.write('disable_downloads', int(form.cleaned_data['disable_downloads']))
 			Setting.write('disable_checks', int(form.cleaned_data['disable_checks']))
+			Setting.write('download_interval', form.cleaned_data['download_interval'])
+			Setting.write('check_hour', form.cleaned_data['check_hour'])
 			return redirect(reverse('settings'))
 		else:
 			return render('settings/auto-page.htt', {'page': 'settings', 'subpage': 'auto', 'title': title, 'description': description, 'form': form}, RequestContext(request))
 	else:
 		disable_downloads = (Setting.read('disable_downloads', '0') == '1')
 		disable_checks = (Setting.read('disable_checks', '0') == '1')
-		data = {'disable_downloads': disable_downloads, 'disable_checks': disable_checks}
+		download_interval = int(Setting.read('download_interval', settings.ROSKOM_DOWNLOAD_INTERVAL))
+		check_hour = int(Setting.read('check_hour', settings.ROSKOM_CHECK_HOUR))
+		data = {'disable_downloads': disable_downloads, 'disable_checks': disable_checks, 'download_interval': download_interval, 'check_hour': check_hour}
 		form = AutoSettingsForm(data)
 		return render('settings/auto-page.htt', {'page': 'settings', 'subpage': 'auto', 'title': title, 'description': description, 'form': form}, RequestContext(request))
 

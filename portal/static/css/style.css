@@ -35,3 +35,11 @@ tr.active-row td {
 	width: 98%;
 	height: 100px;
 }
+
+fieldset {
+	margin-bottom: 20px !important;
+}
+
+fieldset legend {
+	margin-bottom: 0px !important;
+}
