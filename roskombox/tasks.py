@@ -45,8 +45,8 @@ except:
 def perform_load(mode = 'manual', blocking = False):
 	os.chdir(settings.BASE_DIR)
 
-	if using_uwsgi:
-		uwsgi.lock(0)
+	#if using_uwsgi:
+	#	uwsgi.lock(0)
 
 	command = make_command('roskom_load', mode)
 		
@@ -55,14 +55,14 @@ def perform_load(mode = 'manual', blocking = False):
 	except:
 		pass
 
-	if using_uwsgi:
-		uwsgi.unlock(0)
+	#if using_uwsgi:
+	#	uwsgi.unlock(0)
 
 def perform_scan(mode = 'manual', blocking = False):
 	os.chdir(settings.BASE_DIR)
 	
-	if using_uwsgi:
-		uwsgi.lock(0)
+	#if using_uwsgi:
+	#	uwsgi.lock(0)
 
 	command = make_command('roskom_check', mode)
 		
@@ -71,5 +71,5 @@ def perform_scan(mode = 'manual', blocking = False):
 	except:
 		pass
 
-	if using_uwsgi:
-		uwsgi.unlock(0)
+	#if using_uwsgi:
+	#	uwsgi.unlock(0)
