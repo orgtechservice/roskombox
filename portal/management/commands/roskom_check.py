@@ -176,12 +176,20 @@ class Command(BaseCommand):
 			if mode not in ['auto', 'web']:
 				mode = 'manual'
 
+		# Проверим, имеется ли незавершённая проверка
+		prev = Scan.objects.filter(state = 'new').first()
+
 		if mode == 'auto':
 			scan = Scan.automatic()
 		elif mode == 'web':
 			scan = Scan.web()
 		else:
 			scan = Scan.manual()
+
+		if prev is not None:
+			scan.set_failed('Предыдущая проверка всё ещё не завершена')
+			self.stderr.write('Previous scan is still in progress, please wait for it to finish')
+			exit(-1)
 
 		# Разблокируем кнопку, теперь её будет блокировать само наличие проверки
 		Setting.write('roskom:scan_requested', '0')
