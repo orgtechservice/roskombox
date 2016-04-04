@@ -7,8 +7,7 @@
 #------------------------------------------------------------------------------------#
 
 # Python
-import re
-from os.path import expanduser
+import re, os
 
 # Наш проект
 from portal.models import *
@@ -18,6 +17,17 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 re_ssh_key = re.compile(r'^(ssh\-rsa|ssh\-dss) ([a-zA-Z0-9+/]+={0,2}) (([a-z]+)@([a-z]+))$')
+
+filename = os.path.expanduser("~/.ssh/authorized_keys")
+dirname = os.path.dirname(filename)
+if(not os.path.exists(dirname)) or (not os.path.isdir(dirname)):
+	os.mkdir(dirname)
+	os.chmod(dirname, 0o700)
+
+	with open(filename, 'w') as file:
+		pass
+
+	os.chmod(filename, 0o600)
 
 # Проанализировать запрос и извлечь из него номер запрошенной страницы (для постраничного вывода)
 def get_page_number(request):
@@ -71,16 +81,12 @@ def send_mail_notification(event, arg):
 		return None
 
 def fetch_ssh_keys():
-	filename = expanduser("~/.ssh/authorized_keys")
-
 	try:
 		return [{'mode': l[0], 'name': l[2], 'data': l[1]} for l in [l.strip().split(' ') for l in open(filename, 'r') if re_ssh_key.match(l) is not None]]
 	except:
 		return []
 
 def append_ssh_key(key_data):
-	filename = expanduser("~/.ssh/authorized_keys")
-
 	lines = []
 	try:
 		with open(filename, 'r') as file:
@@ -100,8 +106,6 @@ def append_ssh_key(key_data):
 	return False
 
 def delete_ssh_key(key_name):
-	filename = expanduser("~/.ssh/authorized_keys")
-
 	lines = []
 	try:
 		with open(filename, 'r') as file:
@@ -121,6 +125,5 @@ def delete_ssh_key(key_name):
 	return False
 
 def reset_ssh_keys():
-	filename = expanduser("~/.ssh/authorized_keys")
 	with open(filename, 'w') as file:
 		file.truncate(0)
