@@ -135,7 +135,7 @@ socket = 127.0.0.1:8807
 processes = 10
 cheaper = 2
 master = true
-max-requests = 100
+max-requests = 1000
 threads = 4
 chdir = /home/admin/www/roskombox
 env = DJANGO_SETTINGS_MODULE=roskombox.settings
@@ -147,6 +147,8 @@ mule = 1
 auto-procname = true
 procname-prefix-spaced = [roskombox]
 ```
+
+**Важно**: на старых версиях uWSGI (версию можно посмотреть при помощи команды `uwsgi --version`) указанная конфигурация в силу присутствующего в этих версиях бага может вызывать dead lock воркеров. Для версий, более старых, чем `2.0.7-debian`, рекомендуется убрать директиву `max-requests`.
 
 Редактируем `/etc/uwsgi-emperor/emperor.ini` (то, что там есть — удаляем):
 
