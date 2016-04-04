@@ -146,6 +146,7 @@ plugins = python3
 mule = 1
 auto-procname = true
 procname-prefix-spaced = [roskombox]
+uid = admin
 ```
 
 **Важно**: на старых версиях uWSGI (версию можно посмотреть при помощи команды `uwsgi --version`) указанная конфигурация в силу присутствующего в этих версиях бага может вызывать dead lock воркеров. Для версий, более старых, чем `2.0.7-debian`, рекомендуется убрать директиву `max-requests`.
