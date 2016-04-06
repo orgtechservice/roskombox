@@ -104,6 +104,7 @@ ROSKOM_SEARCH_SUBSTRING = 'eais.rkn.gov.ru'
 ROSKOM_FROM_EMAIL = 'roskom@mkpnet.ru'
 ROSKOM_DOWNLOAD_INTERVAL = 2
 ROSKOM_CHECK_HOUR = 3
+ROSKOM_THREADS = 100
 
 EMAIL_BACKEND = 'django_sendmail_backend.backends.EmailBackend'
 

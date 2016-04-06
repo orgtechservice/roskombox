@@ -218,7 +218,7 @@ class Command(BaseCommand):
 
 		# Инициализируем наши рабочие потоки
 		threads = {}
-		for i in range(100):
+		for i in range(int(settings.ROSKOM_THREADS)):
 			threads[i] = Worker(i, in_list, out_list, scan)
 			threads[i].set_timeout(3)
 
