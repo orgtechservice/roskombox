@@ -119,7 +119,7 @@ def create_rrd():
 		'DS:registry_filesize:GAUGE:400:U:U',
 		'DS:download_time:GAUGE:400:U:U',
 		'DS:scan_time:GAUGE:400:U:U',
-		'RRA:MAX:0.5:1:103680' # 1 год в 5-минутных интервалах
+		'RRA:MAX:0.5:1:105408' # 366 дней в 5-минутных интервалах
 	)
 
 def update_rrd():
