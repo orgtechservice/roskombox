@@ -12,6 +12,7 @@ from os.path import expanduser, isfile
 
 # Django
 from django.conf import settings
+from django.db import connection
 
 # rrdtool
 import rrdtool
@@ -81,6 +82,16 @@ def perform_scan(mode = 'manual', blocking = False):
 	#if using_uwsgi:
 	#	uwsgi.unlock(0)
 
+def last_scan_stats():
+	cursor = connection.cursor()
+	cursor.execute("SELECT total, available, unavailable, local FROM scans ORDER BY started DESC LIMIT 1")
+	row = cursor.fetchone()
+
+	if row is None:
+		return {'total': 0, 'available': 0, 'unavailable': 0, 'local': 0}
+	else:
+		return {'total': row[0], 'available': row[1], 'unavailable': row[2], 'local': row[3]}
+
 def render_graphs():
 	print('Updating graph')
 	end_time = int(time.time())
@@ -98,13 +109,41 @@ def render_graphs():
 	)
 
 def create_rrd():
-	rrdtool.create(RRD_FILENAME, '--step', '300', 'DS:total_urls:GAUGE:400:U:U', 'RRA:MAX:0.5:1:600')
+	rrdtool.create (
+		RRD_FILENAME,
+		'--step', '300', # интервал 5 минут
+		'DS:total_urls:GAUGE:400:U:U',
+		'DS:available_urls:GAUGE:400:U:U',
+		'DS:unavailable_urls:GAUGE:400:U:U',
+		'DS:local_urls:GAUGE:400:U:U',
+		'DS:registry_filesize:GAUGE:400:U:U',
+		'DS:download_time:GAUGE:400:U:U',
+		'DS:scan_time:GAUGE:400:U:U',
+		'RRA:MAX:0.5:1:103680' # 1 год в 5-минутных интервалах
+	)
+
+def update_rrd():
+	stats = last_scan_stats()
+
+	rrdtool.update (
+		RRD_FILENAME,
+		'N:%s:%s:%s:%s:%s:%s:%s' % (
+				str(stats['total']),
+				str(stats['available']),
+				str(stats['unavailable']),
+				str(stats['local']),
+				'U', 'U', 'U'
+			)
+	)
 
 def update_stats():
 	if not os.path.exists(RRD_FILENAME):
 		create_rrd()
 
 	print('Updating RRD')
-	rrdtool.update(RRD_FILENAME, 'N:%d' % random.randint(1, 1000))
+	try:
+		update_rrd()
+	except:
+		create_rrd()
 
 	render_graphs()
