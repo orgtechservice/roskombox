@@ -102,6 +102,16 @@ def last_scan_stats():
 	else:
 		return {'total': row[0], 'available': row[1], 'unavailable': row[2], 'local': row[3]}
 
+def last_download_stats():
+	cursor = connection.cursor()
+	cursor.execute("SELECT duration, filesize FROM downloads ORDER BY updated DESC LIMIT 1")
+	row = cursor.fetchone()
+
+	if row is None:
+		return {'duration': 0, 'filesize': 0}
+	else:
+		return {'duration': row[0], 'filesize': row[1]}
+
 def render_graphs():
 	print('Updating graph')
 	end_time = int(time.time())
@@ -118,7 +128,7 @@ def render_graphs():
 	rrdtool.graph (
 		RRD_GRAPH_SCANS,
 		'--border', '0',
-		'-t', 'Результаты проверок достпности',
+		'-t', 'Результаты проверок доступности',
 		'-s', str(start_time),
 		'-e', str(end_time),
 		'-w', '300',
@@ -182,16 +192,19 @@ def create_rrd():
 	)
 
 def update_rrd():
-	stats = last_scan_stats()
+	scan = last_scan_stats()
+	download = last_download_stats()
 
 	rrdtool.update (
 		RRD_FILENAME,
 		'N:%s:%s:%s:%s:%s:%s:%s' % (
-				str(stats['total']),
-				str(stats['available']),
-				str(stats['unavailable']),
-				str(stats['local']),
-				'U', 'U', 'U'
+				str(scan['total']),
+				str(scan['available']),
+				str(scan['unavailable']),
+				str(scan['local']),
+				str(download['filesize']),
+				'U',
+				str(int(download['duration'])),
 			)
 	)
 
