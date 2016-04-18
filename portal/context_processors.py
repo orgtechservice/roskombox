@@ -13,6 +13,9 @@ from datetime import datetime
 def preprocess_context(request):
 	result = {}
 
+	hide_intro = (Setting.read('hide_intro', '0') == '1')
+	result.update({'hide_intro': hide_intro})
+
 	last_update = Setting.read('roskom:update', None)
 	if last_update is not None:
 		result.update({'last_update': datetime.fromtimestamp(int(last_update))})

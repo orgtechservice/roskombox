@@ -6,11 +6,18 @@
 			{% include 'inc/sidebar.htt' %}
 		</div>
 		<div class="span9">
-			<div class="hero-unit">
-				<h1 style="padding-bottom: 24px;">Добро пожаловать</h1>
-				<p>При помощи этого инструмента вы можете осуществлять автоматические и ручные выгрузки реестра запрещённых сайтов Роскомнадзора, а также контролировать их недоступность.</p>
-				<p><a class="btn btn-info btn-large" href="{% url 'downloads' %}">Перейти к выгрузкам</a></p>
-			</div>
+			{% if not hide_intro %}
+				<div class="hero-unit">
+					<h1 style="padding-bottom: 24px;">Добро пожаловать</h1>
+					<p>При помощи этого инструмента вы можете осуществлять автоматические и ручные выгрузки реестра запрещённых сайтов Роскомнадзора, а также контролировать их недоступность.</p>
+					<p><a class="btn btn-info btn-large" href="{% url 'downloads' %}">Перейти к выгрузкам</a>&nbsp;<a class="btn btn-warning btn-large" href="{% url 'hide-intro' %}">Скрыть</a></p>
+				</div>
+			{% else %}
+				<h2>Статистическая информация</h2>
+				<p>
+					<img src="/media/stat.png" />
+				</p>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}

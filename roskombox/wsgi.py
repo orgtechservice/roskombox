@@ -76,6 +76,10 @@ if using_uwsgi:
 		uwsgi.unlock(0)
 		print("roskom_cleanup finished")
 
+	@cron(-5, -1, -1, -1, -1, target = 'mule')
+	def roskom_stat(num):
+		tasks.update_stats()
+
 	@cron(0, -1, -1, -1, -1, target = 'mule') # ежечасно
 	def check_timers(num):
 		print("Checking timers")

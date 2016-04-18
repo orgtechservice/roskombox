@@ -217,6 +217,11 @@ def available_links_page(request, scan_id):
 	links = AvailableLink.objects.filter(scan = scan)
 	return render('iframes/available-links.htt', {'scan': scan, 'links': links}, RequestContext(request))
 
+@login_required
+def hide_intro_page(request):
+	Setting.write('hide_intro', '1')
+	return redir_home_page(request)
+
 ############################################
 
 def redir_home_page(request):

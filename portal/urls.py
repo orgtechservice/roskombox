@@ -31,6 +31,7 @@ urlpatterns = [
 	# Пара редиректов
 	#url(r'^admin', views.redir_home_page),
 	url(r'^accounts/profile/?$', views.redir_home_page),
+	url(r'^actions/hide-intro/?$', views.hide_intro_page, name = 'hide-intro'),
 
 	# Авторизация пользователей
 	url(r'^accounts/login/?$', auth_views.login, {'template_name': 'login-page.htt', 'authentication_form': forms.LoginForm}, name = 'login'),
