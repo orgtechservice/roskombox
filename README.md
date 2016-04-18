@@ -26,7 +26,7 @@
 
 ```bash
 apt-get update
-apt-get install mysql-server uwsgi uwsgi-emperor uwsgi-plugin-python3 python3-venv build-essential libxml2-dev python3-dev libmysqlclient-dev libxslt1-dev nginx-full sqlite3
+apt-get install mysql-server uwsgi uwsgi-emperor uwsgi-plugin-python3 python3-venv build-essential libxml2-dev python3-dev libmysqlclient-dev libxslt1-dev nginx-full sqlite3 librrd-dev
 ```
 
 Dev-пакеты и средства разработки необходимы в силу того, что при установке через pip пакетов с PyPI будет произведена компиляция исходных кодов на C.
@@ -56,7 +56,7 @@ mkdir ~/venvs
 pyvenv ~/venvs/roskombox
 source ~/venvs/roskombox/bin/activate
 pip install Django django-bootstrap-pagination django-crispy-forms django-jsonview django-sendmail-backend requests suds-py3 uwsgidecorators
-pip install mysqlclient lxml # здесь будет компиляция
+pip install rrdtool mysqlclient lxml # здесь будет компиляция
 mkdir ~/www
 cd ~/www
 git clone https://github.com/orgtechservice/roskombox.git
