@@ -14,9 +14,16 @@
 				</div>
 			{% else %}
 				<h2>Статистическая информация</h2>
-				<p>
-					<img src="/media/stat.png" />
-				</p>
+				<table width="100%" cellpadding="16" cellspacing="0">
+					<tr>
+						<td width="50%" align="center" valign="middle"><img src="/media/total_urls.png" class="graph" /></td>
+						<td width="50%" align="center" valign="middle"><img src="/media/registry_filesize.png" class="graph" /></td>
+					</tr>
+					<tr>
+						<td width="50%" align="center" valign="middle"><img src="/media/scans.png" class="graph" /></td>
+						<td width="50%" align="center" valign="middle"><img src="/media/times.png" class="graph" /></td>
+					</tr>
+				</table>
 			{% endif %}
 		</div>
 	</div>

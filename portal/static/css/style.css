@@ -43,3 +43,8 @@ fieldset {
 fieldset legend {
 	margin-bottom: 0px !important;
 }
+
+img.graph {
+	border: 1px solid #D7D7D7;
+	border-radius: 5px;
+}
