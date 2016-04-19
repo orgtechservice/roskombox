@@ -37,6 +37,9 @@ out_list = []
 
 # Подстрока для поиска, по умолчанию из конфига
 search_substring = settings.ROSKOM_SEARCH_SUBSTRING
+request_headers = {
+	'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/49.0.2623.108 Chrome/49.0.2623.108 Safari/537.36',
+}
 
 # http://stackoverflow.com/questions/22492484/how-do-i-get-the-ip-address-from-a-http-request-using-the-requests-library
 try:
@@ -89,10 +92,21 @@ class Worker(threading.Thread):
 		print(u"(%d of %d) [%s] %s" % (counter, self.total_count, item['status'], item['url']))
 
 	def process_item(self, item):
-		global search_substring
+		global search_substring, request_headers
 		try:
-			response = requests.get(item['url'], timeout = self.timeout)
-			if search_substring in response.text:
+			response = requests.get(item['url'], timeout = self.timeout, stream = True, headers = request_headers)
+				
+			maxsize = 100000
+			content = ''
+			for chunk in response.iter_content(2048):
+				content += str(chunk)
+
+			if len(content) > 100000:
+				print('DATA TOO LARGE: %s' % item['url'])
+				item['status'] = 'available'
+				item['reply'] = 'data too large'
+
+			if search_substring in content:
 				item['status'] = 'blocked'
 			else:
 				peer = response.raw._original_response.peer
@@ -102,11 +116,11 @@ class Worker(threading.Thread):
 						item['status'] = 'local-ip'
 					else:
 						item['status'] = 'available'
-						item['reply'] = response.text
+						item['reply'] = content
 				else:
 					item['status'] = 'available'
-					item['reply'] = response.text
-		except:
+					item['reply'] = content
+		except Exception as e:
 			item['status'] = 'failure'
 
 		out_mutex.acquire()

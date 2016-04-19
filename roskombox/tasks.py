@@ -133,6 +133,7 @@ def render_graphs():
 		'-e', str(end_time),
 		'-w', '300',
 		'-h', '100',
+		'-v', 'ссылок',
 		def_available_urls,
 		def_local_urls,
 		'LINE1:available_urls#AA0000:Число доступных URL:',
@@ -147,6 +148,7 @@ def render_graphs():
 		'-e', str(end_time),
 		'-w', '300',
 		'-h', '100',
+		'-v', 'ссылок',
 		def_total_urls,
 		'AREA:total_urls#00AA00:Ссылок в реестре:',
 	)
@@ -159,6 +161,7 @@ def render_graphs():
 		'-e', str(end_time),
 		'-w', '300',
 		'-h', '100',
+		'-v', 'байт',
 		def_registry_filesize,
 		'AREA:registry_filesize#00AA00:Объём выгрузки:',
 	)
@@ -171,6 +174,7 @@ def render_graphs():
 		'-e', str(end_time),
 		'-w', '300',
 		'-h', '100',
+		'-v', 'секунд',
 		def_download_time,
 		def_scan_time,
 		'LINE1:download_time#AA0000:Длительность выгрузки:',
