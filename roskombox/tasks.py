@@ -136,8 +136,8 @@ def render_graphs():
 		'-v', 'ссылок',
 		def_available_urls,
 		def_local_urls,
-		'LINE1:available_urls#AA0000:Число доступных URL:',
-		'LINE1:local_urls#AAAA00:Число резолвящихся в локальные IP:'
+		'LINE1:available_urls#AA0000:Число доступных URL',
+		'LINE1:local_urls#AAAA00:Число резолвящихся в локальные IP'
 	)
 
 	rrdtool.graph (
@@ -150,7 +150,7 @@ def render_graphs():
 		'-h', '100',
 		'-v', 'ссылок',
 		def_total_urls,
-		'AREA:total_urls#00AA00:Ссылок в реестре:',
+		'AREA:total_urls#00AA00:Ссылок в реестре',
 	)
 
 	rrdtool.graph (
@@ -163,7 +163,7 @@ def render_graphs():
 		'-h', '100',
 		'-v', 'байт',
 		def_registry_filesize,
-		'AREA:registry_filesize#00AA00:Объём выгрузки:',
+		'AREA:registry_filesize#00AA00:Объём выгрузки',
 	)
 
 	rrdtool.graph (
@@ -177,8 +177,8 @@ def render_graphs():
 		'-v', 'секунд',
 		def_download_time,
 		def_scan_time,
-		'LINE1:download_time#AA0000:Длительность выгрузки:',
-		'LINE1:scan_time#0000AA:Длительность проверки:',
+		'LINE1:download_time#AA0000:Длительность выгрузки',
+		'LINE1:scan_time#0000AA:Длительность проверки',
 	)
 
 def create_rrd():
