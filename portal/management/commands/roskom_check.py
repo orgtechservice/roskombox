@@ -139,41 +139,38 @@ class Worker(threading.Thread):
 			else:
 				self.process_item(item)
 
-class RoskomParser:
-	def __init__(self):
-		pass
+def parse_registry(filename):
+	result = []
 
-	def parse(self, filename):
-		global in_list
-
-		with open(filename, 'rb') as file:
-			tree = etree.fromstring(file.read())
+	with open(filename, 'rb') as file:
+		tree = etree.fromstring(file.read())
 		
-		records = tree.xpath('//content')
-		for item in records:
+	records = tree.xpath('//content')
+	for item in records:
+		try:
 			try:
-				try:
-					block_type = item.attrib['blockType']
-				except:
-					block_type = 'default'
-
-				decision = item.xpath('decision')[0]
-				urls = item.xpath('url')
-				ips = item.xpath('ip')
-				domains = item.xpath('domain')
-				ip_subnets = item.xpath('ipSubnet')
-
-				if block_type == 'default':
-					in_list += [{'url': url.text, 'status': 'unknown', 'reply': None} for url in urls]
-				elif block_type == 'ip':
-					pass # NOT IMPLEMENTED
-				elif block_type == 'domain':
-					in_list += [{'url': "http://%s/" % domain.text, 'status': 'unknown', 'reply': None} for domain in domains]
-				else:
-					pass # ???
+				block_type = item.attrib['blockType']
 			except:
-				continue
+				block_type = 'default'
 
+			decision = item.xpath('decision')[0]
+			urls = item.xpath('url')
+			ips = item.xpath('ip')
+			domains = item.xpath('domain')
+			ip_subnets = item.xpath('ipSubnet')
+
+			if block_type == 'default':
+				result += [{'url': url.text, 'status': 'unknown', 'reply': None} for url in urls]
+			elif block_type == 'ip':
+				pass # NOT IMPLEMENTED
+			elif block_type == 'domain':
+				result += [{'url': "http://%s/" % domain.text, 'status': 'unknown', 'reply': None} for domain in domains]
+			else:
+				pass # ???
+		except:
+			continue
+
+	return result
 
 class Command(BaseCommand):
 	args = '<"auto">'
@@ -220,10 +217,10 @@ class Command(BaseCommand):
 			search_substring = new_substring
 
 		self.stdout.write("Starting check")
-		checker = RoskomParser()
+		
 		try:
 			self.stdout.write("Parsing dump.xml")
-			checker.parse("%s/dump.xml" % settings.ROSKOM_CACHE_ROOT)
+			in_list = parse_registry("%s/dump.xml" % settings.ROSKOM_CACHE_ROOT)
 			self.stdout.write("Parsing done")
 		except:
 			scan.set_failed("Не удалось распарсить dump.xml, возможно, не было выгрузок")
