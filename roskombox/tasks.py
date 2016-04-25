@@ -29,6 +29,11 @@ RRD_GRAPH_TOTAL_URLS = "%s/total_urls.png" % settings.MEDIA_ROOT
 RRD_GRAPH_REGISTRY_FILESIZE = "%s/registry_filesize.png" % settings.MEDIA_ROOT
 RRD_GRAPH_TIMES = "%s/times.png" % settings.MEDIA_ROOT
 
+RRD_GRAPH_SCANS_1D = "%s/scans-1d.png" % settings.MEDIA_ROOT
+RRD_GRAPH_TOTAL_URLS_1D = "%s/total_urls-1d.png" % settings.MEDIA_ROOT
+RRD_GRAPH_REGISTRY_FILESIZE_1D = "%s/registry_filesize-1d.png" % settings.MEDIA_ROOT
+RRD_GRAPH_TIMES_1D = "%s/times-1d.png" % settings.MEDIA_ROOT
+
 # Временные интервалы
 ONE_DAY = 86400
 ONE_MONTH = 2592000
@@ -94,7 +99,7 @@ def perform_scan(mode = 'manual', blocking = False):
 
 def last_scan_stats():
 	cursor = connection.cursor()
-	cursor.execute("SELECT total, available, unavailable, local FROM scans ORDER BY started DESC LIMIT 1")
+	cursor.execute("SELECT total, available, unavailable, local FROM scans WHERE state = \'finished\' ORDER BY started DESC LIMIT 1")
 	row = cursor.fetchone()
 
 	if row is None:
@@ -104,7 +109,7 @@ def last_scan_stats():
 
 def last_download_stats():
 	cursor = connection.cursor()
-	cursor.execute("SELECT duration, filesize FROM downloads ORDER BY updated DESC LIMIT 1")
+	cursor.execute("SELECT duration, filesize FROM downloads WHERE state = \'got-response\' ORDER BY updated DESC LIMIT 1")
 	row = cursor.fetchone()
 
 	if row is None:
@@ -115,7 +120,8 @@ def last_download_stats():
 def render_graphs():
 	print('Updating graph')
 	end_time = int(time.time())
-	start_time = end_time - ONE_MONTH
+	start_time_1m = end_time - ONE_MONTH
+	start_time_1d = end_time - ONE_DAY
 
 	def_total_urls = 'DEF:total_urls=%s:total_urls:MAX' % RRD_FILENAME
 	def_available_urls = 'DEF:available_urls=%s:available_urls:MAX' % RRD_FILENAME
@@ -124,27 +130,29 @@ def render_graphs():
 	def_registry_filesize = 'DEF:registry_filesize=%s:registry_filesize:MAX' % RRD_FILENAME
 	def_download_time = 'DEF:download_time=%s:download_time:MAX' % RRD_FILENAME
 	def_scan_time = 'DEF:scan_time=%s:scan_time:MAX' % RRD_FILENAME
+
+	# 1 месяц
 	
 	rrdtool.graph (
 		RRD_GRAPH_SCANS,
 		'--border', '0',
 		'-t', 'Результаты проверок доступности',
-		'-s', str(start_time),
+		'-s', str(start_time_1m),
 		'-e', str(end_time),
 		'-w', '300',
 		'-h', '100',
 		'-v', 'ссылок',
 		def_available_urls,
 		def_local_urls,
-		'LINE1:available_urls#AA0000:Число доступных URL',
-		'LINE1:local_urls#AAAA00:Число резолвящихся в локальные IP'
+		'LINE1:available_urls#AA0000:Доступные URL',
+		'LINE1:local_urls#AAAA00:Резолвящиеся в локальные IP'
 	)
 
 	rrdtool.graph (
 		RRD_GRAPH_TOTAL_URLS,
 		'--border', '0',
 		'-t', 'Общее число ссылок в реестре',
-		'-s', str(start_time),
+		'-s', str(start_time_1m),
 		'-e', str(end_time),
 		'-w', '300',
 		'-h', '100',
@@ -157,7 +165,7 @@ def render_graphs():
 		RRD_GRAPH_REGISTRY_FILESIZE,
 		'--border', '0',
 		'-t', 'Объём выгрузки в байтах',
-		'-s', str(start_time),
+		'-s', str(start_time_1m),
 		'-e', str(end_time),
 		'-w', '300',
 		'-h', '100',
@@ -170,7 +178,7 @@ def render_graphs():
 		RRD_GRAPH_TIMES,
 		'--border', '0',
 		'-t', 'Временные затраты',
-		'-s', str(start_time),
+		'-s', str(start_time_1m),
 		'-e', str(end_time),
 		'-w', '300',
 		'-h', '100',
@@ -180,6 +188,65 @@ def render_graphs():
 		'LINE1:download_time#AA0000:Длительность выгрузки',
 		'LINE1:scan_time#0000AA:Длительность проверки',
 	)
+
+	# 1 день
+
+	rrdtool.graph (
+		RRD_GRAPH_SCANS_1D,
+		'--border', '0',
+		'-t', 'Результаты проверок доступности',
+		'-s', str(start_time_1d),
+		'-e', str(end_time),
+		'-w', '300',
+		'-h', '100',
+		'-v', 'ссылок',
+		def_available_urls,
+		def_local_urls,
+		'LINE1:available_urls#AA0000:Доступные URL',
+		'LINE1:local_urls#AAAA00:Резолвящиеся в локальные IP'
+	)
+
+	rrdtool.graph (
+		RRD_GRAPH_TOTAL_URLS_1D,
+		'--border', '0',
+		'-t', 'Общее число ссылок в реестре',
+		'-s', str(start_time_1d),
+		'-e', str(end_time),
+		'-w', '300',
+		'-h', '100',
+		'-v', 'ссылок',
+		def_total_urls,
+		'AREA:total_urls#00AA00:Ссылок в реестре',
+	)
+
+	rrdtool.graph (
+		RRD_GRAPH_REGISTRY_FILESIZE_1D,
+		'--border', '0',
+		'-t', 'Объём выгрузки в байтах',
+		'-s', str(start_time_1d),
+		'-e', str(end_time),
+		'-w', '300',
+		'-h', '100',
+		'-v', 'байт',
+		def_registry_filesize,
+		'AREA:registry_filesize#00AA00:Объём выгрузки',
+	)
+
+	rrdtool.graph (
+		RRD_GRAPH_TIMES_1D,
+		'--border', '0',
+		'-t', 'Временные затраты',
+		'-s', str(start_time_1d),
+		'-e', str(end_time),
+		'-w', '300',
+		'-h', '100',
+		'-v', 'секунд',
+		def_download_time,
+		def_scan_time,
+		'LINE1:download_time#AA0000:Длительность выгрузки',
+		'LINE1:scan_time#0000AA:Длительность проверки',
+	)
+	
 
 def create_rrd():
 	rrdtool.create (
@@ -207,8 +274,8 @@ def update_rrd():
 				str(scan['unavailable']),
 				str(scan['local']),
 				str(download['filesize']),
-				'U',
 				str(int(download['duration'])),
+				'U',
 			)
 	)
 

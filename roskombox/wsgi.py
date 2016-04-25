@@ -76,7 +76,7 @@ if using_uwsgi:
 		uwsgi.unlock(0)
 		print("roskom_cleanup finished")
 
-	@cron(-5, -1, -1, -1, -1)
+	@cron(-5, -1, -1, -1, -1, target = 'mule')
 	def roskom_stat(num):
 		tasks.update_stats()
 
@@ -96,5 +96,7 @@ if using_uwsgi:
 		# Если нужно, запускаем проверку
 		if now.hour == check_hour:
 			tasks.perform_scan('auto')
+
+		print('Exitting check_timers')
 
 	print("Running under uWSGI, perfect!")

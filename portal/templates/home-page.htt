@@ -13,17 +13,40 @@
 					<p><a class="btn btn-info btn-large" href="{% url 'downloads' %}">Перейти к выгрузкам</a>&nbsp;<a class="btn btn-warning btn-large" href="{% url 'hide-intro' %}">Скрыть</a></p>
 				</div>
 			{% else %}
+
 				<h2>Статистическая информация</h2>
-				<table width="100%" cellpadding="16" cellspacing="0">
-					<tr>
-						<td width="50%" align="center" valign="middle"><img src="/media/total_urls.png" class="graph" /></td>
-						<td width="50%" align="center" valign="middle"><img src="/media/registry_filesize.png" class="graph" /></td>
-					</tr>
-					<tr>
-						<td width="50%" align="center" valign="middle"><img src="/media/scans.png" class="graph" /></td>
-						<td width="50%" align="center" valign="middle"><img src="/media/times.png" class="graph" /></td>
-					</tr>
-				</table>
+
+				<ul id="myTab" class="nav nav-tabs">
+					<li class="active"><a href="#home" data-toggle="tab">Сведения за месяц</a></li>
+					<li><a href="#profile" data-toggle="tab">Сведения за сутки</a></li>
+				</ul>
+
+				<div id="myTabContent" class="tab-content">
+					<div class="tab-pane fade active in" id="home">
+						<table width="100%" cellpadding="16" cellspacing="0">
+							<tr>
+								<td width="50%" align="center" valign="middle"><img src="/media/total_urls.png" class="graph" /></td>
+								<td width="50%" align="center" valign="middle"><img src="/media/registry_filesize.png" class="graph" /></td>
+							</tr>
+							<tr>
+								<td width="50%" align="center" valign="middle"><img src="/media/scans.png" class="graph" /></td>
+								<td width="50%" align="center" valign="middle"><img src="/media/times.png" class="graph" /></td>
+							</tr>
+						</table>
+					</div>
+					<div class="tab-pane fade in" id="profile">
+						<table width="100%" cellpadding="16" cellspacing="0">
+							<tr>
+								<td width="50%" align="center" valign="middle"><img src="/media/total_urls-1d.png" class="graph" /></td>
+								<td width="50%" align="center" valign="middle"><img src="/media/registry_filesize-1d.png" class="graph" /></td>
+							</tr>
+							<tr>
+								<td width="50%" align="center" valign="middle"><img src="/media/scans-1d.png" class="graph" /></td>
+								<td width="50%" align="center" valign="middle"><img src="/media/times-1d.png" class="graph" /></td>
+							</tr>
+						</table>
+					</div>
+				</div>
 			{% endif %}
 		</div>
 	</div>
