@@ -74,13 +74,12 @@ class Worker(threading.Thread):
 		self.total_count = len(in_data)
 
 	def select_unprocessed(self):
-		in_mutex.acquire()
-		try:
-			result = self.in_data.pop()
-		except:
-			result = None
-		in_mutex.release()
-		return result
+		with in_mutex:
+			try:
+				result = self.in_data.pop()
+			except:
+				result = None
+			return result
 
 	def report_progress(self, item):
 		global counter
@@ -123,10 +122,9 @@ class Worker(threading.Thread):
 		except Exception as e:
 			item['status'] = 'failure'
 
-		out_mutex.acquire()
-		self.report_progress(item)
-		self.out_data.append(item)
-		out_mutex.release()
+		with out_mutex:
+			self.report_progress(item)
+			self.out_data.append(item)
 
 	def set_timeout(self, new_timeout):
 		self.timeout = new_timeout
