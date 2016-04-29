@@ -232,14 +232,20 @@ class Command(BaseCommand):
 		for i in range(int(settings.ROSKOM_THREADS)):
 			threads[i] = Worker(i, in_list, out_list, scan)
 			threads[i].set_timeout(3)
+			threads[i].setDaemon(True)
 
 		# Разветвляемся
 		for index, thread in threads.items():
 			thread.start()
 
 		# Соединяемся
-		for index, thread in threads.items():
-			thread.join()
+		try:
+			for index, thread in threads.items():
+				thread.join()
+		except KeyboardInterrupt:
+			print('Exitting requested')
+			scan.set_failed('Scan cancelled by pressing ctrl-c')
+			exit(0)
 
 		# Подсчёт статистики
 		total = len(out_list)
