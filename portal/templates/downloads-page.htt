@@ -34,7 +34,7 @@
 				</tbody>
 			</table>
 
-			<div class="pagination">{% bootstrap_paginate downloads %}</div>
+			<div class="pagination">{% bootstrap_paginate downloads range=10 show_prev_next="false" show_first_last="true" %}</div>
 		</div>
 	</div>
 {% endblock %}
