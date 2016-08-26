@@ -55,7 +55,7 @@ su - admin
 mkdir ~/venvs
 pyvenv ~/venvs/roskombox
 source ~/venvs/roskombox/bin/activate
-pip install Django django-bootstrap-pagination django-crispy-forms django-jsonview django-sendmail-backend requests suds-py3 uwsgidecorators
+pip install Django==1.9.9 django-bootstrap-pagination django-crispy-forms django-jsonview django-sendmail-backend requests suds-py3 uwsgidecorators
 pip install rrdtool mysqlclient lxml # здесь будет компиляция
 mkdir ~/www
 cd ~/www
