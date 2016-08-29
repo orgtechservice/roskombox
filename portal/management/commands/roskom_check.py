@@ -21,6 +21,10 @@ import resource, time, sys, threading, locale
 import requests
 from lxml import etree
 
+# Отключим ругань на невалидный сертификат
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 # Время начала работы скрипта
 execution_start = time.time()
 
