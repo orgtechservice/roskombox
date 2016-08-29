@@ -100,11 +100,7 @@ class Worker(threading.Thread):
 			response = requests.get(item['url'], timeout = self.timeout, stream = True, headers = request_headers)
 			item['code'] = response.status_code
 
-			maxsize = 100000
-			content = response.raw.read(maxsize + 1, decode_content = True)
-			if len(content) > maxsize:
-				content = 'data too large'
-				print('DATA TOO LARGE: %s' % item['url'])
+			content = response.raw.read(100000, decode_content = True).decode('utf-8')
 
 			if search_substring in content:
 				item['status'] = 'blocked'
