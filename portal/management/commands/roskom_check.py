@@ -94,16 +94,13 @@ class Worker(threading.Thread):
 		global search_substring, request_headers
 		try:
 			response = requests.get(item['url'], timeout = self.timeout, stream = True, headers = request_headers)
-				
-			maxsize = 100000
-			content = ''
-			for chunk in response.iter_content(2048):
-				content += str(chunk)
+			item['code'] = response.status_code
 
-			if len(content) > 100000:
+			maxsize = 100000
+			content = response.raw.read(maxsize + 1, decode_content = True)
+			if len(content) > maxsize:
+				content = 'data too large'
 				print('DATA TOO LARGE: %s' % item['url'])
-				item['status'] = 'available'
-				item['reply'] = 'data too large'
 
 			if search_substring in content:
 				item['status'] = 'blocked'
@@ -158,11 +155,11 @@ def parse_registry(filename):
 			ip_subnets = item.xpath('ipSubnet')
 
 			if block_type == 'default':
-				result += [{'url': url.text, 'status': 'unknown', 'reply': None} for url in urls]
+				result += [{'url': url.text, 'status': 'unknown', 'reply': None, 'code': 0} for url in urls]
 			elif block_type == 'ip':
 				pass # NOT IMPLEMENTED
 			elif block_type == 'domain':
-				result += [{'url': "http://%s/" % domain.text, 'status': 'unknown', 'reply': None} for domain in domains]
+				result += [{'url': "http://%s/" % domain.text, 'status': 'unknown', 'reply': None, 'code': 0} for domain in domains]
 			else:
 				pass # ???
 		except:
@@ -251,10 +248,10 @@ class Command(BaseCommand):
 		unavailable = sum(1 for i in out_list if i['status'] in ['blocked', 'failure'])
 
 		# С доступными ссылками работаем отдельно — их надо не просто сосчитать, а занести в базу
-		available_links = [i['url'] for i in out_list if i['status'] == 'available']
+		available_links = [i for i in out_list if i['status'] == 'available']
 		with transaction.atomic():
 			for link in available_links:
-				item = AvailableLink(scan = scan, url = link)
+				item = AvailableLink(scan = scan, url = link['url'], code = link['code'], content = link['reply'].encode('utf-8'))
 				item.save()
 
 		available = len(available_links)
