@@ -242,6 +242,8 @@ class Scan(models.Model):
 class AvailableLink(models.Model):
 	scan = models.ForeignKey(Scan, verbose_name = u'Проверка')
 	url = models.TextField(u'URL')
+	code = models.IntegerField(u'Код ответа', null = False, blank = False, default = 0)
+	content = models.BinaryField(u'Содержимое', default = b'', blank = True, null = False)
 
 	def __str__(self):
 		m = url_re.match(self.url)

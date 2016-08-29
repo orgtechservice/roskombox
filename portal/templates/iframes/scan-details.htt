@@ -3,7 +3,7 @@
 {% block content %}
 	<table class="table table-bordered table-striped table-highlight">
 		<tbody>
-			<tr><td width="30%">Тип выгрузки</td><td>{{ scan.get_mode_display }}</td></tr>
+			<tr><td width="30%">Тип проверки</td><td>{{ scan.get_mode_display }}</td></tr>
 			<tr><td width="30%">Состояние</td><td>{{ scan.get_state_display }}</td></tr>
 			{% if scan.state != 'new' %}
 				{% if scan.error %}
