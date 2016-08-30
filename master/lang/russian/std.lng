@@ -1,0 +1,85 @@
+
+error = Ошибка
+
+seek_file_fault=seek file fault %1
+read_file_fault=Ошибка чтения файла %1
+write_file_fault=Ошибка записи файла %1
+close_file_fault=Ошибка закрытия файла %1
+remove_file_fault=Ошибка удаления файла %1
+remove_directory_fault=Ошибка удаления каталога %1
+remove_fault=Ошибка удаления %1
+file_checksum_fault=Контрольная сумма файла неверна %1
+create_directory_fault=Ошибка создания каталога %1
+file_or_directory_not_found=Файл/каталог не найден: %1
+copy_file_fault=Ошибка копирования файла %1 в %2
+wrong_password=Пароль не верен
+
+redirect=Переадресация
+page_not_found=Страница не найдена
+bad_request=Ошибка в запросе
+goto=Поехали
+
+add=Добавить
+create=Создать
+edit=Правка
+save=Сохранить
+remove=Удалить
+cancel=Отменить
+preview=Предпросмотр
+settings=Настройки
+post=Добавить
+sort=Сортировать
+search=Искать
+upload=Загрузить
+no=Нет
+send=Отправить
+comment=Комментарий
+tocomment=Добавить комментарий
+refresh=Обновить
+ok=Ok
+edit_host = Применить
+
+access_denied = Отказано в доступе
+require_privilege = Для запрошенного действия недостаточно прав
+wrong_captcha = Контрольные цифры не верны
+
+# Статус пользователя
+user_guest	= Гость
+user_admin	= Администратор
+user_regular	= Пользователь
+user_moderator	= Модератор
+user_inactive	= Неактивированный
+
+authorization=Авторизация
+unauthorized=требуется авторизация
+auth_fault=ошибка авторизации
+empty_request=пустой запрос
+user_not_found=Пользователь не найден
+user_wrong_password=Пароль не верен
+user_is_inactive=Пользователь не активирован
+user_is_locked=Пользователь заблокирован
+login_busy=Логин уже занят
+mail_busy=Пользователь с e-mail %<1> уже зарегистрирован
+password_too_short=Пароль слишком короткий, должно быть минимум 6 символов
+passwords_mismatch=Введённые пароли не совпадают
+password_bad_entropy=В пароле должно быть как минимум 6 различных символов, сейчас только %1
+password_should_contain_chars_and_digits=Пароль должен обязательно содержать как буквы, так и цифры
+password_symbol_appears_too_often=Символ «%1» содержится в пароле более двух раз: он встретился %2 раз
+passinfo=Заполните следующие поля только если хотите изменить пароль
+current_password=Текущий пароль
+wrong_current_password=Текущий пароль указан неверно
+new_password=Новый пароль
+
+login=Логин
+password=Пароль
+password_confirm=Подтверждение пароля
+your_password=Ваш пароль
+enter=Войти
+name=Имя
+email=e-mail
+autologin=Запомнить
+login_fault = неверный логин или пароль
+wrong_login = некорректный логин, логин должен содержать только символы a-z в любом регистре, а также цифры, дефис и знак подчёркивания
+
+host_not_found = Хост не найден
+import = импортировать
