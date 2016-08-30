@@ -1,6 +1,0 @@
-{% extends 'abstract/auth-page.htt' %}
-
-{% block content %}
-	<h2>Успешно деавторизован</h2>
-	<p align="center"><a href="/">Войти снова?</a></p>
-{% endblock %}
