@@ -1,0 +1,1 @@
+{% extends 'abstract/auth-page.htt' %}

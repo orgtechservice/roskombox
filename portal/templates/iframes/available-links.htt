@@ -1,0 +1,9 @@
+{% extends 'abstract/iframe-page.htt' %}
+
+{% block content %}
+	<ul>
+		{% for link in links %}
+			<li><a href="{{ link.url }}" target="_blank">{{ link }}</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}
