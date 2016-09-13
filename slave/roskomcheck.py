@@ -138,8 +138,6 @@ import resource
 def get_instance_id(api = False):
 	timestamp = int(time.time())
 	instance_id = 0
-	cursor.execute("SET wait_timeout = 30")
-	cursor.execute("SET innodb_lock_wait_timeout = 30")
 	cursor.execute("SELECT checker_id, checker_force_scan, checker_state, checker_last_scan_time FROM roskom_checkers WHERE REPLACE(checker_ip, '127.0.0.1', 'localhost') = (SELECT SUBSTRING_INDEX(host, ':', 1) FROM information_schema.processlist WHERE ID = connection_id()) FOR UPDATE")
 	rows = cursor.fetchall()
 	if len(rows) != 1:
