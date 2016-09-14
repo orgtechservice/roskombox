@@ -1,4 +1,4 @@
-Package: ots-roskomcheck
+Package: roskombox-slave
 Version: 1.0-15
 Section: misc
 Architecture: all
@@ -6,3 +6,5 @@ Depends: python3, python3-requests, python3-mysql.connector
 Maintainer: Alice <alice@mkpnet.ru>
 Priority: extra
 Description: OTS package for RSOC checker utility
+Conflicts: ots-roskomcheck
+Replaces: ots-roskomcheck
