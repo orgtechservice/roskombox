@@ -243,7 +243,8 @@ try {
 				if(isIpAddress($match[2])) {
 					$ips[$match[2]] = $match[2];
 				} else {
-					$domains[$match[2]] = isCyrillic($match[4]) ? $IDN->encode($match[2]) : $match[2];
+					//$domains[$match[2]] = isCyrillic($match[4]) ? $IDN->encode($match[2]) : $match[2];
+					$domains[$match[2]] = $IDN->encode($match[2]);
 				}
 			}
 		}
