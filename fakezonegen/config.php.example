@@ -4,13 +4,13 @@ $config = [
 	// БД Роскома
 	'DB_NAME' => 'roskom_db',
 	'DB_USER' => 'roskom',
-	'DB_PASSWD' => 'roskom123456',
+	'DB_PASSWD' => '******',
 	'DB_HOST' => 'localhost',
 
 	// БД админки
 	'LANBILL_DB_NAME' => 'lan_test',
 	'LANBILL_DB_USER' => 'lan',
-	'LANBILL_DB_PASSWD' => 'd65f08',
+	'LANBILL_DB_PASSWD' => '******',
 	'LANBILL_DB_HOST' => 'localhost',
 
 	// Файлы

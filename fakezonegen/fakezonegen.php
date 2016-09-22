@@ -8,7 +8,7 @@ if(!file_exists($config_filename) || !is_readable($config_filename)) {
 }
 require $config_filename;
 
-require __DIR__ . '/idna_convert.php';
+require '/var/lib/maycloud/php-modules/idna_convert.php';
 
 define('RE_DOMAIN', '#(https?)://(([^/]*)\.([^/:\.]*))(:(\d+))?#i');
 

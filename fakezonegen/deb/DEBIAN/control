@@ -2,7 +2,7 @@ Package: roskombox-fakezonegen
 Version: 1.0-1
 Section: misc
 Architecture: all
-Depends: php-cli
+Depends: maycloud-phpcore, bind9
 Maintainer: Alice <alice@mkpnet.ru>
 Priority: extra
 Description: Fake zone generator
