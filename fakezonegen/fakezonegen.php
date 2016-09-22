@@ -1,30 +1,12 @@
 #!/usr/bin/php
 <?php
 
-/* Скрипт настраивается здесь */
-
-$config = [
-	// БД Роскома
-	'DB_NAME' => 'roskom_db',
-	'DB_USER' => 'roskom',
-	'DB_PASSWD' => 'roskom123456',
-	'DB_HOST' => 'localhost',
-
-	// БД админки
-	'LANBILL_DB_NAME' => 'lan_test',
-	'LANBILL_DB_USER' => 'lan',
-	'LANBILL_DB_PASSWD' => 'd65f08',
-	'LANBILL_DB_HOST' => 'localhost',
-
-	// Файлы
-	'FILENAME' => '/tmp/fake.zones',
-	'TRAP' => '/etc/bind/zone.rkn-trap',
-
-	// Команда перезагрузки
-	'RELOAD_CMD' => 'rndc reload',
-];
-
-/* Далее не трогать, всякие полезные определения */
+$config_filename = '/etc/maycloud/fakezonegen.php';
+if(!file_exists($config_filename) || !is_readable($config_filename)) {
+	echo "Cannot read $config_filename\n";
+	die(-1);
+}
+require $config_filename;
 
 require __DIR__ . '/idna_convert.php';
 
