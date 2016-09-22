@@ -41,7 +41,6 @@ deb_install: $(PROG_FILENAME)
 # полная очистка
 distclean: deb_clean
 	rm -rf $(DEB_FILENAME)
-	rm -rf maycloud-lightengine-amd64.deb
 
 # простая очистка, промежуточные файлы, но оставляет целевые
 clean: deb_clean
