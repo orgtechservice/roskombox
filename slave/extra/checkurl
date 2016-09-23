@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/opt/roskomcheck/checkurl.py $1

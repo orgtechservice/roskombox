@@ -34,7 +34,7 @@ deb_install: $(PROG_FILENAME)
 	cp -r extra/DEBIAN output/roskombox-slave
 	cp config.py.example output/roskombox-slave/opt/roskomcheck/config.py
 	install -m 0755 roskomcheck.py output/roskombox-slave/opt/roskomcheck/roskomcheck.py
-	install -m 0755 roskomcheck.py output/roskombox-slave/opt/roskomcheck/checkurl.py
+	install -m 0755 checkurl.py output/roskombox-slave/opt/roskomcheck/checkurl.py
 	install -m 0755 extra/roskomcheck output/roskombox-slave/usr/bin/roskomcheck
 	install -m 0755 extra/checkurl output/roskombox-slave/usr/bin/checkurl
 
