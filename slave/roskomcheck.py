@@ -81,9 +81,9 @@ class Worker(threading.Thread):
 
 		try:
 			response = requests.get(item[1], timeout = self.timeout, stream = True, headers = request_headers)
-			content = response.raw.read(100000, decode_content = True).decode('utf-8')
+			content = response.raw.read(100000, decode_content = True)
 
-			if 'eais.rkn.gov.ru' in content:
+			if b'eais.rkn.gov.ru' in content:
 				item[2] = 'blocked'
 			else:
 				peer = response.raw._original_response.peer
