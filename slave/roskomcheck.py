@@ -9,7 +9,7 @@
 """
 
 # Импортируем важные пакеты
-import time, sys, threading, requests, hashlib
+import time, sys, threading, requests, hashlib, fcntl
 
 # Отключим ругань на невалидный сертификат
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -120,13 +120,10 @@ class Worker(threading.Thread):
 				self.process_item(item)
 
 try:
-	import MySQLdb
+	import mysql.connector as MySQLdb
 except:
-	try:
-		import mysql.connector as MySQLdb
-	except:
-		print("Failed to import MySQL connector")
-		sys.exit(-1)
+	print("mysql.connector is required, other drivers are not supported")
+	sys.exit(-1)
 
 # Импортируем конфигурацию
 import config
@@ -164,7 +161,7 @@ def get_instance_id(api = False):
 				sys.exit(0)
 
 		instance_id = int(rows[0][0])
-		cursor.execute("UPDATE roskom_checkers SET checker_state = 'scanning' WHERE checker_id = %s", (instance_id,))
+		cursor.execute("UPDATE roskom_checkers SET checker_state = 'scanning', checker_force_scan = 0, checker_last_scan_time = %s WHERE checker_id = %s", (timestamp, instance_id))
 
 	return instance_id
 
@@ -194,8 +191,8 @@ if len(sys.argv) >= 2:
 
 # Установим соединение с БД
 db = connect_db()
+#db.begin()
 cursor = db.cursor(buffered = True)
-
 # Проверим, зарегистрирован ли наш экземпляр в админке. Если нет, нам незачем работать
 instance_id = get_instance_id(api)
 db.commit()
@@ -229,7 +226,7 @@ try:
 except KeyboardInterrupt:
 	# Нас прервали нажатием клавиш ctrl-c, желательно как следует подтереться
 	db = connect_db()
-	cursor = db.cursor(buffered = True)
+	cursor = db.cursor()
 	cursor.execute("UPDATE roskom_checkers SET checker_state = 'idle', checker_force_scan = 0 WHERE checker_id = %s", (instance_id,))
 	log_message("instance #%d aborted by signal" % (instance_id,))
 	db.commit()
@@ -256,7 +253,7 @@ execution_seconds = (execution_time - (execution_minutes * 60))
 
 # Установим соединение с БД для сохранения результатов
 db = connect_db()
-cursor = db.cursor(buffered = True)
+cursor = db.cursor()
 cursor.execute("INSERT INTO roskom_checker_scans (scan_checker_id, scan_when, scan_urls_total, scan_urls_available, scan_urls_unavailable, scan_time) VALUES (%s, %s, %s, %s, %s, %s)", (instance_id, timestamp, total, len(available), len(unavailable), int(execution_time)))
 cursor.execute("UPDATE roskom_checkers SET checker_last_scan_time = %s, checker_last_scan_id = %s, checker_state = 'idle', checker_force_scan = 0 WHERE checker_id = %s", (timestamp, cursor.lastrowid, instance_id))
 cursor.execute("DELETE FROM roskom_available_links WHERE link_checker_id = %s", (instance_id,))
