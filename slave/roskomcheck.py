@@ -11,10 +11,6 @@
 # Импортируем важные пакеты
 import time, sys, threading, requests
 
-# Отключим ругань на невалидный сертификат
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-
 # Время начала работы скрипта
 execution_start = time.time()
 
@@ -33,6 +29,10 @@ counter = 0
 # http://stackoverflow.com/questions/22492484/how-do-i-get-the-ip-address-from-a-http-request-using-the-requests-library
 try:
 	from requests.packages.urllib3.connectionpool import HTTPConnectionPool
+
+	# Отключим ругань на невалидный сертификат
+	from requests.packages.urllib3.exceptions import InsecureRequestWarning
+	requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 except:
 	print("Sadly, your version of Requests is too old.\nTry using the version from OTS repo: http://doc.mkpnet.ru/admin/deb/index.html")
 	sys.exit(-1)
