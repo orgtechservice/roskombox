@@ -9,7 +9,7 @@
 """
 
 # Импортируем важные пакеты
-import time, sys, threading, requests, hashlib, fcntl
+import time, sys, threading, requests
 
 # Отключим ругань на невалидный сертификат
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
