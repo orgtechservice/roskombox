@@ -135,7 +135,7 @@ import resource
 def get_instance_id(api = False):
 	timestamp = int(time.time())
 	instance_id = 0
-	cursor.execute("SELECT checker_id, checker_force_scan, checker_state, checker_last_scan_time FROM roskom_checkers WHERE REPLACE(checker_ip, '127.0.0.1', 'localhost') = (SELECT SUBSTRING_INDEX(host, ':', 1) FROM information_schema.processlist WHERE ID = connection_id()) FOR UPDATE")
+	cursor.execute("SELECT checker_id, checker_force_scan, checker_state, checker_last_scan_time, checker_enabled FROM roskom_checkers WHERE REPLACE(checker_ip, '127.0.0.1', 'localhost') = (SELECT SUBSTRING_INDEX(host, ':', 1) FROM information_schema.processlist WHERE ID = connection_id()) FOR UPDATE")
 	rows = cursor.fetchall()
 	if len(rows) != 1:
 		print("This checker instance is not registered within lanbill database. Register this checker first.")
@@ -144,6 +144,11 @@ def get_instance_id(api = False):
 		force_scan = int(rows[0][1])
 		checker_state = rows[0][2]
 		checker_last_scan_time = int(rows[0][3])
+		checker_enabled = rows[0][4]
+
+		if checker_enabled != 'yes':
+			print("Checker is turned off in the settings section")
+			sys.exit(0)
 
 		if api:
 			if force_scan == 0:
@@ -199,28 +204,34 @@ db.commit()
 
 log_message("instance #%d started using %d threads" % (instance_id, config.THREADS))
 
-# Получим список URL-ок, доступность которых нам требуется проверить
-cursor.execute("SELECT url_text FROM roskom_url")
-in_data = [[0, i[0], 'unknown', '', 0] for i in cursor.fetchall()]
-out_data = []
-
-# Можно отсоединиться от БД на время анализа
-cursor.close()
-db.close()
-
-# Инициализируем наши рабочие потоки
-threads = {}
-for i in range(config.THREADS):
-	threads[i] = Worker(i, in_data, out_data, trace)
-	threads[i].set_timeout(config.HTTP_TIMEOUT)
-	threads[i].setDaemon(True)
-
-# Разветвляемся
-for index, thread in threads.items():
-	thread.start()
-
-# Соединяемся
 try:
+	# Получим список URL-ок, доступность которых нам требуется проверить
+	cursor.execute("SELECT url_text FROM roskom_url")
+	in_data = [[0, i[0], 'unknown', '', 0] for i in cursor.fetchall()]
+	out_data = []
+except KeyboardInterrupt:
+	cursor.execute("UPDATE roskom_checkers SET checker_state = 'idle', checker_force_scan = 0 WHERE checker_id = %s", (instance_id,))
+	log_message("instance #%d aborted by signal" % (instance_id,))
+	print('Exitting requested')
+	exit(0)
+finally:
+	# Можно отсоединиться от БД на время анализа
+	cursor.close()
+	db.close()
+
+try:
+	# Инициализируем наши рабочие потоки
+	threads = {}
+	for i in range(config.THREADS):
+		threads[i] = Worker(i, in_data, out_data, trace)
+		threads[i].set_timeout(config.HTTP_TIMEOUT)
+		threads[i].setDaemon(True)
+
+	# Разветвляемся
+	for index, thread in threads.items():
+		thread.start()
+
+	# Соединяемся
 	for index, thread in threads.items():
 		thread.join()
 except KeyboardInterrupt:
