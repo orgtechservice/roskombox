@@ -135,7 +135,7 @@ import resource
 def get_instance_id(api = False):
 	timestamp = int(time.time())
 	instance_id = 0
-	cursor.execute("SELECT checker_id, checker_force_scan, checker_state, checker_last_scan_time, checker_enabled FROM roskom_checkers WHERE REPLACE(checker_ip, '127.0.0.1', 'localhost') = (SELECT SUBSTRING_INDEX(host, ':', 1) FROM information_schema.processlist WHERE ID = connection_id()) FOR UPDATE")
+	cursor.execute("SELECT checker_id, checker_force_scan, checker_state, checker_last_scan_time, checker_enabled, checker_threads FROM roskom_checkers WHERE REPLACE(checker_ip, '127.0.0.1', 'localhost') = (SELECT SUBSTRING_INDEX(host, ':', 1) FROM information_schema.processlist WHERE ID = connection_id()) FOR UPDATE")
 	rows = cursor.fetchall()
 	if len(rows) != 1:
 		print("This checker instance is not registered within lanbill database. Register this checker first.")
@@ -145,6 +145,10 @@ def get_instance_id(api = False):
 		checker_state = rows[0][2]
 		checker_last_scan_time = int(rows[0][3])
 		checker_enabled = rows[0][4]
+		checker_threads = int(rows[0][5])
+
+		if checker_threads != 0:
+			config.THREADS = checker_threads
 
 		if checker_enabled != 'yes':
 			print("Checker is turned off in the settings section")
