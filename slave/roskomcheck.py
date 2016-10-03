@@ -9,7 +9,7 @@
 """
 
 # Импортируем важные пакеты
-import time, sys, threading, requests
+import time, sys, threading, requests, signal
 
 # Время начала работы скрипта
 execution_start = time.time()
@@ -198,6 +198,22 @@ if len(sys.argv) >= 2:
 	if sys.argv[1] == 'api':
 		api = True
 
+def signal_handler(signal, frame):
+	timestamp = int(time.time())
+	message = "instance #%d aborted by signal" % (instance_id,)
+	db = connect_db()
+	cursor = db.cursor()
+	cursor.execute("UPDATE roskom_checkers SET checker_state = 'idle', checker_force_scan = 0 WHERE checker_id = %s", (instance_id,))
+	cursor.execute("INSERT INTO roskom_log (log_time, log_message, log_type, log_script_name) VALUES (%s, %s, %s, 'roskomcheck.py')", (timestamp, message, 'info'))
+	db.commit()
+	print('Exitting requested')
+	db.close()
+	exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGQUIT, signal_handler)
+
 # Установим соединение с БД
 db = connect_db()
 #db.begin()
@@ -208,48 +224,29 @@ db.commit()
 
 log_message("instance #%d started using %d threads" % (instance_id, config.THREADS))
 
-try:
-	# Получим список URL-ок, доступность которых нам требуется проверить
-	cursor.execute("SELECT url_text FROM roskom_url")
-	in_data = [[0, i[0], 'unknown', '', 0] for i in cursor.fetchall()]
-	out_data = []
-except KeyboardInterrupt:
-	cursor.execute("UPDATE roskom_checkers SET checker_state = 'idle', checker_force_scan = 0 WHERE checker_id = %s", (instance_id,))
-	log_message("instance #%d aborted by signal" % (instance_id,))
-	print('Exitting requested')
-	exit(0)
-finally:
-	# Можно отсоединиться от БД на время анализа
-	cursor.close()
-	db.close()
+# Получим список URL-ок, доступность которых нам требуется проверить
+cursor.execute("SELECT url_text FROM roskom_url")
+in_data = [[0, i[0], 'unknown', '', 0] for i in cursor.fetchall()]
+out_data = []
 
-try:
-	# Инициализируем наши рабочие потоки
-	threads = {}
-	for i in range(config.THREADS):
-		threads[i] = Worker(i, in_data, out_data, trace)
-		threads[i].set_timeout(config.HTTP_TIMEOUT)
-		threads[i].setDaemon(True)
+# Можно отсоединиться от БД на время анализа
+cursor.close()
+db.close()
 
-	# Разветвляемся
-	for index, thread in threads.items():
-		thread.start()
+# Инициализируем наши рабочие потоки
+threads = {}
+for i in range(config.THREADS):
+	threads[i] = Worker(i, in_data, out_data, trace)
+	threads[i].set_timeout(config.HTTP_TIMEOUT)
+	threads[i].setDaemon(True)
 
-	# Соединяемся
-	for index, thread in threads.items():
-		thread.join()
-except KeyboardInterrupt:
-	# Нас прервали нажатием клавиш ctrl-c, желательно как следует подтереться
-	db = connect_db()
-	cursor = db.cursor()
-	cursor.execute("UPDATE roskom_checkers SET checker_state = 'idle', checker_force_scan = 0 WHERE checker_id = %s", (instance_id,))
-	log_message("instance #%d aborted by signal" % (instance_id,))
-	db.commit()
-	cursor.close()
-	db.close()
+# Разветвляемся
+for index, thread in threads.items():
+	thread.start()
 
-	print('Exitting requested')
-	exit(0)
+# Соединяемся
+for index, thread in threads.items():
+	thread.join()
 
 # На этом этапе у нас сформирована статистика в массиве out_data, получим данные для внесения в БД
 timestamp = int(time.time())

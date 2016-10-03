@@ -1,5 +1,5 @@
 Package: roskombox-slave
-Version: 1.0-21
+Version: 1.0-22
 Section: misc
 Architecture: all
 Depends: python3, python3-requests, python3-mysql.connector
