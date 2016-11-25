@@ -1,5 +1,5 @@
 Package: roskombox-fakezonegen
-Version: 1.0-1
+Version: 1.0-2
 Section: misc
 Architecture: all
 Depends: maycloud-phpcore, bind9

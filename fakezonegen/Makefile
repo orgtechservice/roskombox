@@ -34,6 +34,7 @@ deb_install: $(PROG_FILENAME)
 	mkdir -p deb/var/lib/maycloud/php-modules
 
 	install -m 0755 fakezonegen.php deb/var/lib/maycloud/php-exec
+	install -m 0755 fakezonegen2.php deb/var/lib/maycloud/php-exec
 	install -m 0644 config.php.example deb/etc/maycloud/fakezonegen.php
 
 ########################### CLEAN RULES ######################################
