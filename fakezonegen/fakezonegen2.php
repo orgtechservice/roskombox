@@ -260,6 +260,7 @@ unset($db);
 $zones = [];
 foreach($domains as & $value) {
 	if($value[strlen($value) - 1] === '.') $value = substr($value, 0, strlen($value) - 1);
+	if(in_array($value, $config['EXCEPT_DOMAINS'])) continue;
 	$zones[$value] = renderZone($value);
 }
 
