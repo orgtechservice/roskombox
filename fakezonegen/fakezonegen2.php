@@ -114,6 +114,12 @@ function getOurLastDate() {
 	}
 }
 
+function endsWith($haystack, $needle) {
+	$length = strlen($needle);
+	if($length == 0) return false;
+    return (substr($haystack, - $length) === $needle);
+}
+
 /* Далее непосредственно логика скрипта */
 
 // Сначала подключимся к БД админки
@@ -260,6 +266,13 @@ unset($db);
 $zones = [];
 foreach($domains as & $value) {
 	if($value[strlen($value) - 1] === '.') $value = substr($value, 0, strlen($value) - 1);
+	if(in_array($value, $config['EXCEPT_DOMAINS'])) continue;
+
+	foreach($config['EXCEPT_DOMAINS_MASK'] as $exception) {
+		if(endsWith($value, $exception))
+			continue;
+	}
+
 	$zones[$value] = renderZone($value);
 }
 
