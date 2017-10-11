@@ -19,4 +19,6 @@ $config = [
 
 	// Команда перезагрузки
 	'RELOAD_CMD' => 'rndc reload',
+
+	'EXCEPT_DOMAINS' => ['vk.com', 'vkontakte.ru', 'ya.ru', 'yandex.ru'],
 ];
